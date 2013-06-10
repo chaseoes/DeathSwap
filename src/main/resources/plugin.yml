@@ -1,0 +1,8 @@
+name: DeathSwap
+main: me.chaseoes.deathswap.DeathSwap
+version: 0
+description: Sethbling's deathswap gametype
+commands:
+  deathswap:
+    description: The central command for the DeathSwap plugin.
+    usage: /<command> [args]
