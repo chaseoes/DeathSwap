@@ -1,6 +1,6 @@
 name: DeathSwap
 main: me.chaseoes.deathswap.DeathSwap
-version: 0
+version: maven-version-number
 description: Sethbling's deathswap gametype
 commands:
   deathswap:
