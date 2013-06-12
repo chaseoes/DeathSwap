@@ -3,6 +3,7 @@ package me.chaseoes.deathswap;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
@@ -38,5 +39,9 @@ public class DeathSwap extends JavaPlugin {
     
     public DSGame getGame(String mapName) {
     	return games.get(mapName);
+    }
+    
+    public String format(String s) {
+    	return ChatColor.DARK_GRAY + "[" + ChatColor.GOLD + "Death" + ChatColor.GREEN + "Swap" + ChatColor.DARK_GRAY + "]" + ChatColor.translateAlternateColorCodes('&', s);
     }
 }
