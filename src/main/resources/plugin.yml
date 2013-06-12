@@ -6,3 +6,4 @@ commands:
   deathswap:
     description: The central command for the DeathSwap plugin.
     usage: /<command> [args]
+    aliases: [ds]
