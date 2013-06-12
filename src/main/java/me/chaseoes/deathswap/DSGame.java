@@ -29,6 +29,10 @@ public class DSGame {
         upperBound = new Location(loc1.getWorld(), Math.max(loc1.getBlockX(), loc2.getBlockX()), loc1.getWorld().getMaxHeight(), Math.max(loc1.getBlockZ(), loc2.getBlockZ()));
         world = loc1.getWorld();
     }
+    
+    public ArrayList<String> getPlayersIngame() {
+    	return players;
+    }
 
     public void swap() {
         Collections.shuffle(players, rand);
