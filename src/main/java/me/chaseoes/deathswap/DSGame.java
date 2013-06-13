@@ -21,6 +21,7 @@ public class DSGame {
     private Location lowerBound;
     private Location upperBound;
     private World world;
+    private int swapId = -1;
 
     public DSGame(String name, int size, Location loc1, Location loc2) {
         this.name = name;
@@ -51,22 +52,13 @@ public class DSGame {
         }
     }
 
-    public Location getRandomLoc() {
-        int dx = upperBound.getBlockX() - lowerBound.getBlockX();
-        int dz = upperBound.getBlockZ() - lowerBound.getBlockZ();
-        int rx = rand.nextInt(dx);
-        int rz = rand.nextInt(dz);
-        int x = lowerBound.getBlockX() + rx;
-        int z = lowerBound.getBlockZ() + rz;
-        int y = world.getHighestBlockYAt(x, z);
-        return new Location(world, x, y, z);
-    }
 
     public void joinGame(Player player) {
         if (state == GameState.INGAME) {
             player.sendMessage("Game " + name + " is currently running");
         } else if (players.size() < size) {
 
+            players.add(player.getName());
             DSMetadata meta = MetadataHelper.getDSMetadata(player);
             meta.setCurrentGame(this);
         } else {
@@ -75,6 +67,125 @@ public class DSGame {
     }
 
     public void leaveGame(Player player) {
+        broadcast(player.getName() + " left the DeathSwap game");
+        if (state == GameState.INGAME) {
+            if (players.size() - 1 == 1) {
+                winGame(Bukkit.getPlayerExact(players.get(0)));
+            }
+        }
+        MetadataHelper.getDSMetadata(player).reset();
+        player.teleport(DeathSwap.getInstance().getLobbyLocation());
+    }
 
+    public void winGame(Player player) {
+        Bukkit.broadcastMessage(player.getName() + " has won on " + name);
+        MetadataHelper.getDSMetadata(player).reset();
+        player.teleport(DeathSwap.getInstance().getLobbyLocation());
+    }
+
+    public void startGame() {
+        broadcast("Starting game...");
+        startSwapTimer();
+        teleportToRandomSpawns();
+    }
+
+    public void startSwapTimer() {
+        if (swapId == -1) {
+            swapId = Bukkit.getScheduler().runTaskTimer(DeathSwap.getInstance(), new Runnable() {
+                int minTime = DeathSwap.getInstance().getConfig().getInt("map." + name + ".min-swap-time");
+                int maxTime = DeathSwap.getInstance().getConfig().getInt("map." + name + ".max-swap-time");
+                int diff = maxTime - minTime;
+                int currTime = 0;
+                int currRand = rand.nextInt(diff) + minTime;
+                @Override
+                public void run() {
+                    if (currTime > currRand) {
+                        broadcast("Commencing swap");
+                        swap();
+                        currRand = rand.nextInt(diff) + minTime;
+                    } else {
+                        currTime++;
+                    }
+                }
+            }, 20L, 20L).getTaskId();
+        }
+    }
+
+    public void stopSwapTask() {
+        if (swapId != -1) {
+            Bukkit.getScheduler().cancelTask(swapId);
+        }
+    }
+
+    //Hell method
+    public void teleportToRandomSpawns() {
+        int scale = (int) Math.ceil(Math.sqrt(players.size() * 9));
+        int xDist = upperBound.getBlockX() - lowerBound.getBlockX();
+        int zDist = upperBound.getBlockZ() - lowerBound.getBlockZ();
+        double xDistOvScale = (double) xDist / (double) scale;
+        double zDistOvScale = (double) zDist / (double) scale;
+        ArrayList<ArrayList<PartCoords>> grid = new ArrayList<ArrayList<PartCoords>>(scale);
+        for (int i = 0; i < scale; i++) {
+            ArrayList<PartCoords> arrayList = new ArrayList<PartCoords>(scale);
+            grid.add(arrayList);
+            for (int j = 0; j < scale; j++) {
+                arrayList.add(new PartCoords(i, j));
+            }
+        }
+        ArrayList<Location> locs = new ArrayList<Location>(players.size());
+        for (int i = 0; i < players.size(); i++) {
+            ArrayList<PartCoords> coords = grid.get(rand.nextInt(grid.size()));
+            PartCoords pc = coords.get(rand.nextInt(coords.size()));
+            Location lower = new Location(world, lowerBound.getBlockX() + (xDistOvScale * (double) pc.x), 0, lowerBound.getBlockZ() + (zDistOvScale * (double) pc.z));
+            Location upper = new Location(world, upperBound.getBlockX() + (xDistOvScale * (double) (pc.x + 1)), 0, upperBound.getBlockZ() + (zDistOvScale * (double) (pc.z + 1)));
+            locs.add(getRandomLoc(lower, upper));
+            for (int j = -1 + pc.x; j < (2 + pc.x); j++) {
+                for (int k = -1 + pc.z; k < (2 + pc.z); k++) {
+                    if (j < 0 || k < 0) {
+                        continue;
+                    } else {
+                        for (ArrayList<PartCoords> aL : grid) {
+                            for (int m = 0; m < aL.size(); m++) {
+                                PartCoords part = aL.get(m);
+                                if (part.x == j && part.z == k) {
+                                    aL.remove(m);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < players.size(); i++) {
+            Bukkit.getPlayerExact(players.get(i)).teleport(locs.get(i));
+        }
+    }
+
+    //Hell's partner in crime
+    public Location getRandomLoc(Location loc1, Location loc2) {
+        int dx = Math.max(loc1.getBlockX(), loc2.getBlockX()) - Math.min(loc1.getBlockX(), loc2.getBlockX());
+        int dz = Math.max(loc1.getBlockZ(), loc2.getBlockZ()) - Math.min(loc1.getBlockZ(), loc2.getBlockZ());
+        int rx = rand.nextInt(dx);
+        int rz = rand.nextInt(dz);
+        int x = Math.min(loc1.getBlockX(), loc2.getBlockX()) + rx;
+        int z = Math.min(loc1.getBlockZ(), loc2.getBlockZ()) + rz;
+        int y = world.getHighestBlockYAt(x, z);
+        return new Location(world, x, y, z);
+    }
+
+    public void broadcast(String message) {
+        for (String str : players) {
+            Bukkit.getPlayerExact(str).sendMessage(message);
+        }
+    }
+
+    class PartCoords {
+        int x;
+        int z;
+
+        PartCoords(int x, int z) {
+            this.x = x;
+            this.z = z;
+        }
     }
 }

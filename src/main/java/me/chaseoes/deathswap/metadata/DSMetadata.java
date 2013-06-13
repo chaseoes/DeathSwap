@@ -44,4 +44,10 @@ public class DSMetadata {
     public boolean isIngame() {
         return currentGame != null;
     }
+
+    public void reset() {
+        currentGame = null;
+        lastSwappedTo = null;
+        swapKills = 0;
+    }
 }

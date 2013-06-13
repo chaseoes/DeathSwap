@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
@@ -43,5 +44,13 @@ public class DeathSwap extends JavaPlugin {
     
     public String format(String s) {
     	return ChatColor.DARK_GRAY + "[" + ChatColor.GOLD + "Death" + ChatColor.GREEN + "Swap" + ChatColor.DARK_GRAY + "]" + ChatColor.translateAlternateColorCodes('&', s);
+    }
+
+    public Location getLobbyLocation() {
+        String loc = getConfig().getString("lobby-location");
+        if (loc != null) {
+            return SerializableLocation.getUtilities().stringToLocation(loc);
+        }
+        return null;
     }
 }
