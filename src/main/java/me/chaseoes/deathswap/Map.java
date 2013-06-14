@@ -58,7 +58,7 @@ public class Map {
 
 	public void setP2(Location p2) {
 		this.p2 = p2;
-		DeathSwap.getInstance().getConfig().set(getPath() + "region.p2", SerializableLocation.getUtilities().locationToString(p1));
+		DeathSwap.getInstance().getConfig().set(getPath() + "region.p2", SerializableLocation.getUtilities().locationToString(p2));
 		DeathSwap.getInstance().saveConfig();
 	}
 
