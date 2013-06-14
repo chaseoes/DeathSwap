@@ -59,7 +59,6 @@ public class DSGame {
         } else if (players.size() < size) {
 
             players.add(player.getName());
-            MetadataHelper.createDSMetadata(player);
             DSMetadata meta = MetadataHelper.getDSMetadata(player);
             System.out.println(meta);
             meta.setCurrentGame(this);
@@ -127,14 +126,14 @@ public class DSGame {
 
     //Hell method
     public void teleportToRandomSpawns() {
-        int scale = (int) Math.ceil(Math.sqrt(players.size() * 9));
-        int xDist = upperBound.getBlockX() - lowerBound.getBlockX();
-        int zDist = upperBound.getBlockZ() - lowerBound.getBlockZ();
-        double xDistOvScale = (double) xDist / (double) scale;
-        double zDistOvScale = (double) zDist / (double) scale;
-        ArrayList<ArrayList<PartCoords>> grid = new ArrayList<ArrayList<PartCoords>>(scale);
+        double scale = Math.ceil(Math.sqrt(players.size() * 9));
+        double xDist = upperBound.getBlockX() - lowerBound.getBlockX();
+        double zDist = upperBound.getBlockZ() - lowerBound.getBlockZ();
+        double xDistOvScale = xDist / scale;
+        double zDistOvScale = zDist / scale;
+        ArrayList<ArrayList<PartCoords>> grid = new ArrayList<ArrayList<PartCoords>>((int) scale);
         for (int i = 0; i < scale; i++) {
-            ArrayList<PartCoords> arrayList = new ArrayList<PartCoords>(scale);
+            ArrayList<PartCoords> arrayList = new ArrayList<PartCoords>((int) scale);
             grid.add(arrayList);
             for (int j = 0; j < scale; j++) {
                 arrayList.add(new PartCoords(i, j));

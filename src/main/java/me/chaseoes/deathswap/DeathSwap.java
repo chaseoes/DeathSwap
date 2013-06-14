@@ -2,6 +2,8 @@ package me.chaseoes.deathswap;
 
 import java.util.HashMap;
 
+import me.chaseoes.deathswap.listeners.PlayerJoinListener;
+import me.chaseoes.deathswap.listeners.PlayerQuitListener;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -33,11 +35,13 @@ public class DeathSwap extends JavaPlugin {
 		MapUtilities.getUtilities().setup(this);
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new SignChangeListener(), this);
+        pm.registerEvents(new PlayerJoinListener(), this);
+        pm.registerEvents(new PlayerQuitListener(), this);
 
 		if (getConfig().getConfigurationSection("maps") != null) {
 			for (String map : getConfig().getConfigurationSection("maps").getKeys(false)) {
 				maps.put(map, new Map(map));
-				games.put(map, new DSGame(map, 200, maps.get(map).getP2(), maps.get(map).getP2()));
+				games.put(map, new DSGame(map, 200, maps.get(map).getP1(), maps.get(map).getP2()));
 			}
 		}
 
