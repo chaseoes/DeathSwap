@@ -136,7 +136,7 @@ public class DeathSwap extends JavaPlugin {
                     cs.sendMessage(format("You are already in a game!"));
                 } else if (cs.hasPermission("deathswap.play")) {
 					if (strings.length == 1) {
-						if (!needsToAccept.containsValue(cs.getName())) {
+						if (!needsToAccept.containsKey(cs.getName())) {
                             cs.sendMessage(format("Nobody has requested to duel you!"));
 						} else {
                             DuelInfo info = needsToAccept.get(cs.getName());
