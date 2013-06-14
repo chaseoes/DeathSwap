@@ -38,9 +38,9 @@ public class DeathSwap extends JavaPlugin {
 		MapUtilities.getUtilities().setup(this);
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new SignChangeListener(), this);
-        pm.registerEvents(new PlayerJoinListener(), this);
-        pm.registerEvents(new PlayerQuitListener(), this);
-        pm.registerEvents(new PlayerCommandPreproccessListener(), this);
+		pm.registerEvents(new PlayerJoinListener(), this);
+		pm.registerEvents(new PlayerQuitListener(), this);
+		pm.registerEvents(new PlayerCommandPreproccessListener(), this);
 
 		if (getConfig().getConfigurationSection("maps") != null) {
 			for (String map : getConfig().getConfigurationSection("maps").getKeys(false)) {
@@ -49,9 +49,9 @@ public class DeathSwap extends JavaPlugin {
 			}
 		}
 
-        for (Player player : getServer().getOnlinePlayers()) {
-            MetadataHelper.createDSMetadata(player);
-        }
+		for (Player player : getServer().getOnlinePlayers()) {
+			MetadataHelper.createDSMetadata(player);
+		}
 
 		getServer().getScheduler().runTaskLater(this, new Runnable() {
 			@Override
@@ -62,6 +62,9 @@ public class DeathSwap extends JavaPlugin {
 	}
 
 	public void onDisable() {
+		for (DSGame game : games.values()) {
+			// game.stopGame();
+		}
 		maps.clear();
 		instance = null;
 	}
@@ -70,41 +73,103 @@ public class DeathSwap extends JavaPlugin {
 		if (cmnd.getName().equalsIgnoreCase("deathswap")) {
 			if (strings.length == 0) {
 				cs.sendMessage(format("Version " + getDescription().getVersion() + " by chaseoes."));
+				cs.sendMessage(format("Type &b/ds help &7for help."));
 				return true;
 			}
 
 			if (strings[0].equalsIgnoreCase("join")) {
-				if (strings.length == 2) {
-					String map = strings[1];
-					if (games.containsKey(map)) {
-						games.get(map).joinGame((Player)cs);
-						cs.sendMessage(format("Successfully joined the map " + strings[1] + "!"));
+				if (cs.hasPermission("deathswap.play")) {
+					if (strings.length == 2) {
+						String map = strings[1];
+						if (games.containsKey(map)) {
+							games.get(map).joinGame((Player)cs);
+						} else {
+							cs.sendMessage(format("That map does not exist!"));
+						}
 					} else {
-						cs.sendMessage(format("That map does not exist!"));
+						cs.sendMessage(format("Incorrect command syntax."));
+						cs.sendMessage(format("Type &b/ds help &7for help."));
 					}
 				} else {
-					cs.sendMessage(format("Incorrect command syntax."));
+					cs.sendMessage(format("You don't have permission."));
+				}
+			}
+
+			if (strings[0].equalsIgnoreCase("leave")) {
+				if (cs.hasPermission("deathswap.play")) {
+					if (strings.length == 2) {
+						if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
+							DSGame game = MetadataHelper.getDSMetadata((Player) cs).getCurrentGame();
+							game.leaveGame((Player) cs);
+						} else {
+							cs.sendMessage(format("You aren't in a game."));
+						}
+					} else {
+						cs.sendMessage(format("Incorrect command syntax."));
+						cs.sendMessage(format("Type &b/ds help &7for help."));
+					}
+				} else {
+					cs.sendMessage(format("You don't have permission."));
 				}
 			}
 
 			if (strings[0].equalsIgnoreCase("create")) {
-				if (strings.length == 4) {
-					if (strings[1].equalsIgnoreCase("map")) {
-						String mapName = strings[2];
-						String mapType = strings[3];
-						try {
-							Map m = new Map(mapName);
-							MapUtilities.getUtilities().createMap(m, (Player) cs, GameType.get(mapType), 20);
-							maps.put(mapName, m);
-							games.put(m.getName(), new DSGame(m.getName(), 2000, m.getP1(), m.getP2()));
-							cs.sendMessage(format("Successfully created " + mapName + "!"));
-						} catch (EmptyClipboardException e) {
-							cs.sendMessage(format("You must select the map with WorldEdit first."));
+				if (cs.hasPermission("deathswap.create")) {
+					if (strings.length == 4) {
+						if (strings[1].equalsIgnoreCase("map")) {
+							String mapName = strings[2];
+							String mapType = strings[3];
+							try {
+								Map m = new Map(mapName);
+								MapUtilities.getUtilities().createMap(m, (Player) cs, GameType.get(mapType), 20);
+								maps.put(mapName, m);
+								games.put(m.getName(), new DSGame(m.getName(), 2000, m.getP1(), m.getP2()));
+								cs.sendMessage(format("Successfully created " + mapName + "!"));
+							} catch (EmptyClipboardException e) {
+								cs.sendMessage(format("You must select the map with WorldEdit first."));
+							}
 						}
+					} else {
+						cs.sendMessage(format("Incorrect command syntax."));
+						cs.sendMessage(format("Type &b/ds help &7for help."));
 					}
 				} else {
-					cs.sendMessage(format("Incorrect command syntax."));
+					cs.sendMessage(format("You don't have permission."));
 				}
+			}
+
+			if (strings[0].equalsIgnoreCase("setmax")) {
+				if (cs.hasPermission("deathswap.create")) {
+					if (strings.length == 3) {
+						String mapName = strings[1];
+						try {
+							int max = Integer.parseInt(strings[1]);
+							if (maps.containsKey(mapName)) {
+								Map m = maps.get(mapName);
+								m.setMaxPlayers(max);
+								cs.sendMessage(format("Successfully set the max players to " + max + "!"));
+							} else {
+								cs.sendMessage(format("That map does not exist!"));
+							}
+						} catch (Exception e) {
+							cs.sendMessage(format("That isn't a number!"));
+						}
+					} else {
+						cs.sendMessage(format("Incorrect command syntax."));
+						cs.sendMessage(format("Type &b/ds help &7for help."));
+					}
+				} else {
+					cs.sendMessage(format("You don't have permission."));
+				}
+			}
+
+			if (strings[0].equalsIgnoreCase("help")) {
+				cs.sendMessage(format("DeathSwap Commands:"));
+				cs.sendMessage(ChatColor.DARK_GRAY + "/ds" + ChatColor.GRAY + ": General plugin information.");
+				cs.sendMessage(ChatColor.DARK_GRAY + "/ds join <map name>" + ChatColor.GRAY + ": Joins the specified map.");
+				cs.sendMessage(ChatColor.DARK_GRAY + "/ds leave" + ChatColor.GRAY + ": Leave the game you're in.");
+				cs.sendMessage(ChatColor.DARK_GRAY + "/ds create map <map name> <game type>" + ChatColor.GRAY + ": Create a DeathSwap map.");
+				cs.sendMessage(ChatColor.DARK_GRAY + "/ds setmax <map> <#>" + ChatColor.GRAY + ": Set the max players for a map.");
 			}
 		}
 		return true;

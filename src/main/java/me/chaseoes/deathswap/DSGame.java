@@ -58,25 +58,23 @@ public class DSGame {
 
     public void joinGame(Player player) {
         if (state == GameState.INGAME) {
-            player.sendMessage("Game " + name + " is currently running");
+        	player.sendMessage(DeathSwap.getInstance().format("That game is currently in progress."));
         } else if (players.size() < DeathSwap.getInstance().getMap(name).getMaxPlayers()) {
 
             players.add(player.getName());
             DSMetadata meta = MetadataHelper.getDSMetadata(player);
-            System.out.println(meta);
             meta.setCurrentGame(this);
-            System.out.println(DeathSwap.getInstance().getMap(name).getMaxPlayers() + " " + players.size());
+            player.sendMessage(DeathSwap.getInstance().format("Successfully joined the map " + name + "!"));
+            broadcast(DeathSwap.getInstance().format(player.getName() + " has joined the game!"));
             if (players.size() >= (DeathSwap.getInstance().getMap(name).getMaxPlayers()) / 2) {
             	startGame();
             }
-        } else {
-            player.sendMessage("Game " + name + " is full");
         }
     }
 
     public void leaveGame(Player player) {
         players.remove(player.getName());
-        broadcast(player.getName() + " left the DeathSwap game");
+        broadcast(DeathSwap.getInstance().format(player.getName() + " has left the game."));
         if (state == GameState.INGAME) {
             if (players.size() == 1) {
                 winGame(Bukkit.getPlayerExact(players.get(0)));
@@ -87,14 +85,14 @@ public class DSGame {
     }
 
     public void winGame(Player player) {
-        Bukkit.broadcastMessage(player.getName() + " has won on " + name);
+    	broadcast(DeathSwap.getInstance().format(player.getName() + " won on the map " + name + "!"));
         stopSwapTask();
         MetadataHelper.getDSMetadata(player).reset();
         player.teleport(DeathSwap.getInstance().getLobbyLocation());
     }
 
     public void startGame() {
-        broadcast("Starting game...");
+    	broadcast(DeathSwap.getInstance().format("The game has started! Good luck!"));
         startSwapTimer();
         teleportToRandomSpawns();
         state = GameState.INGAME;
@@ -111,7 +109,7 @@ public class DSGame {
                 @Override
                 public void run() {
                     if (currTime > currRand) {
-                        broadcast("Commencing swap");
+                    	broadcast(DeathSwap.getInstance().format("Commencing swap!"));
                         swap();
                         currRand = rand.nextInt(diff) + minTime;
                         currTime = 0;
