@@ -64,7 +64,7 @@ public class DeathSwap extends JavaPlugin {
 
 	public void onDisable() {
 		for (DSGame game : games.values()) {
-			// game.stopGame();
+			game.stopGame();
 		}
 		maps.clear();
 		instance = null;
