@@ -86,9 +86,16 @@ public class DSGame {
 
     public void winGame(Player player) {
     	broadcast(DeathSwap.getInstance().format(player.getName() + " won on the map " + name + "!"));
+        stopGame();
+    }
+
+    public void stopGame() {
+        broadcast(DeathSwap.getInstance().format("The game has ended."));
         stopSwapTask();
-        MetadataHelper.getDSMetadata(player).reset();
-        player.teleport(DeathSwap.getInstance().getLobbyLocation());
+        for (String p : players) {
+            MetadataHelper.getDSMetadata(Bukkit.getPlayerExact(p)).reset();
+        }
+        players.clear();
     }
 
     public void startGame() {
@@ -124,6 +131,7 @@ public class DSGame {
     public void stopSwapTask() {
         if (swapId != -1) {
             Bukkit.getScheduler().cancelTask(swapId);
+            swapId = -1;
         }
     }
 
