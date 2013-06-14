@@ -148,7 +148,7 @@ public class DeathSwap extends JavaPlugin {
 
 			if (strings[0].equalsIgnoreCase("leave")) {
 				if (cs.hasPermission("deathswap.play")) {
-					if (strings.length == 2) {
+					if (strings.length == 1) {
 						if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
 							DSGame game = MetadataHelper.getDSMetadata((Player) cs).getCurrentGame();
 							game.leaveGame((Player) cs);
@@ -194,7 +194,7 @@ public class DeathSwap extends JavaPlugin {
 					if (strings.length == 3) {
 						String mapName = strings[1];
 						try {
-							int max = Integer.parseInt(strings[1]);
+							int max = Integer.parseInt(strings[2]);
 							if (maps.containsKey(mapName)) {
 								Map m = maps.get(mapName);
 								m.setMaxPlayers(max);
