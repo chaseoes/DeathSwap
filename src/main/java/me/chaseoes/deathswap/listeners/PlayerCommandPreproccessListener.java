@@ -10,7 +10,7 @@ public class PlayerCommandPreproccessListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
-        if (MetadataHelper.getDSMetadata(event.getPlayer()).isIngame()) {
+        if (MetadataHelper.getDSMetadata(event.getPlayer()).isIngame() && !event.getPlayer().hasPermission("deathswap.create") && !event.getMessage().startsWith("/ds")) {
             event.setCancelled(true);
         }
     }
