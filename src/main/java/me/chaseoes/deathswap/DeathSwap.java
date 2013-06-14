@@ -111,7 +111,7 @@ public class DeathSwap extends JavaPlugin {
                             cs.sendMessage(format("That player isn't online!"));
                         } else if (!maps.containsKey(map)) {
                             cs.sendMessage(format("That map does not exist!"));
-                        } else if (games.get(map).getType() != GameType.PRIVATE) {
+                        } else if (maps.get(map).getType() != GameType.PRIVATE) {
                             cs.sendMessage(format("That map is not for dueling!"));
                         } else if (games.get(map).getState() != GameState.WAITING) {
                             cs.sendMessage(format("That map is currently ingame!"));

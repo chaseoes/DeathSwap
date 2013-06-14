@@ -25,7 +25,6 @@ public class DSGame {
     private Location upperBound;
     private World world;
     private int swapId = -1;
-    private GameType type = GameType.PUBLIC;
 
     public DSGame(String name, int size, Location loc1, Location loc2) {
         this.name = name;
@@ -60,7 +59,7 @@ public class DSGame {
     public void joinGame(Player player) {
         if (state == GameState.INGAME) {
         	player.sendMessage(DeathSwap.getInstance().format("That game is currently in progress."));
-        } if (type == GameType.PRIVATE) {
+        } if (DeathSwap.getInstance().getMap(name).getType() == GameType.PRIVATE) {
             //TODO: Approval of join goes here
             players.add(player.getName());
             MetadataHelper.getDSMetadata(player).setCurrentGame(this);
@@ -213,10 +212,6 @@ public class DSGame {
         for (String str : players) {
             Bukkit.getPlayerExact(str).sendMessage(message);
         }
-    }
-
-    public GameType getType() {
-        return type;
     }
 
     public GameState getState() {
