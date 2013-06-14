@@ -59,7 +59,7 @@ public class DSGame {
     public void joinGame(Player player) {
         if (state == GameState.INGAME) {
         	player.sendMessage(DeathSwap.getInstance().format("That game is currently in progress."));
-        } if (DeathSwap.getInstance().getMap(name).getType() == GameType.PRIVATE) {
+        } else if (DeathSwap.getInstance().getMap(name).getType() == GameType.PRIVATE) {
             //TODO: Approval of join goes here
             players.add(player.getName());
             MetadataHelper.getDSMetadata(player).setCurrentGame(this);
@@ -101,7 +101,9 @@ public class DSGame {
         broadcast(DeathSwap.getInstance().format("The game has ended."));
         stopSwapTask();
         for (String p : players) {
-            MetadataHelper.getDSMetadata(Bukkit.getPlayerExact(p)).reset();
+            Player player = Bukkit.getPlayerExact(p);
+            MetadataHelper.getDSMetadata(player).reset();
+            player.teleport(DeathSwap.getInstance().getLobbyLocation());
         }
         players.clear();
         state = GameState.WAITING;
