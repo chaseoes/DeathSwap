@@ -26,6 +26,7 @@ public class DeathSwap extends JavaPlugin {
 	private static DeathSwap instance;
 	HashMap<String, Map> maps = new HashMap<String, Map>();
 	public HashMap<String, DSGame> games = new HashMap<String, DSGame>();
+	public HashMap<String, String> needsToAccept = new HashMap<String, String>();
 
 	public static DeathSwap getInstance() {
 		return instance;
@@ -85,6 +86,56 @@ public class DeathSwap extends JavaPlugin {
 							games.get(map).joinGame((Player)cs);
 						} else {
 							cs.sendMessage(format("That map does not exist!"));
+						}
+					} else {
+						cs.sendMessage(format("Incorrect command syntax."));
+						cs.sendMessage(format("Type &b/ds help &7for help."));
+					}
+				} else {
+					cs.sendMessage(format("You don't have permission."));
+				}
+			}
+			
+			if (strings[0].equalsIgnoreCase("duel")) {
+				if (cs.hasPermission("deathswap.play")) {
+					if (strings.length == 3) {
+						String map = strings[1];
+						String p = strings[2];
+						Player player = getServer().getPlayer(p);
+						if (player != null) {
+							if (maps.containsKey(map)) {
+								player.sendMessage(format(cs.getName() + "has requested to duel you in a DeathSwap game!"));
+								player.sendMessage("Type &b/ds accept &7to accept their request.");
+								needsToAccept.remove(cs.getName());
+								needsToAccept.put(cs.getName(), player.getName());
+								games.get(map).joinGame((Player) cs);
+							} else {
+								cs.sendMessage(format("That map does not exist!"));
+							}
+						} else {
+							cs.sendMessage(format("That player isn't online!"));
+						}
+					} else {
+						cs.sendMessage(format("Incorrect command syntax."));
+						cs.sendMessage(format("Type &b/ds help &7for help."));
+					}
+				} else {
+					cs.sendMessage(format("You don't have permission."));
+				}
+			}
+			
+			if (strings[0].equalsIgnoreCase("accept")) {
+				if (cs.hasPermission("deathswap.play")) {
+					if (strings.length == 1) {
+						if (needsToAccept.containsValue(cs.getName())) {
+							needsToAccept.remove(getWhoSentRequest(cs.getName()));
+							Player sender = getServer().getPlayerExact(getWhoSentRequest(cs.getName()));
+							if (sender != null) {
+								DSGame g = MetadataHelper.getDSMetadata(sender).getCurrentGame();
+								g.joinGame((Player) cs);
+							}
+						} else {
+							cs.sendMessage(format("Nobody has requested to duel you!"));
 						}
 					} else {
 						cs.sendMessage(format("Incorrect command syntax."));
@@ -173,6 +224,15 @@ public class DeathSwap extends JavaPlugin {
 			}
 		}
 		return true;
+	}
+	
+	public String getWhoSentRequest(String s) {
+		for (String se : needsToAccept.keySet()) {
+			if (needsToAccept.get(se).equals(s)) {
+				return se;
+			}
+		}
+		return null;
 	}
 
 	public Map getMap(String name) {
