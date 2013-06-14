@@ -1,0 +1,9 @@
+name: DeathSwap
+main: me.chaseoes.deathswap.DeathSwap
+version: maven-version-number
+description: Sethbling's deathswap gametype
+commands:
+  deathswap:
+    description: The central command for the DeathSwap plugin.
+    usage: /<command> [args]
+    aliases: [ds]
