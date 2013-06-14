@@ -2,6 +2,7 @@ package me.chaseoes.deathswap;
 
 import java.util.HashMap;
 
+import me.chaseoes.deathswap.listeners.PlayerCommandPreproccessListener;
 import me.chaseoes.deathswap.listeners.PlayerJoinListener;
 import me.chaseoes.deathswap.listeners.PlayerQuitListener;
 import me.chaseoes.deathswap.metadata.MetadataHelper;
@@ -39,6 +40,7 @@ public class DeathSwap extends JavaPlugin {
 		pm.registerEvents(new SignChangeListener(), this);
         pm.registerEvents(new PlayerJoinListener(), this);
         pm.registerEvents(new PlayerQuitListener(), this);
+        pm.registerEvents(new PlayerCommandPreproccessListener(), this);
 
 		if (getConfig().getConfigurationSection("maps") != null) {
 			for (String map : getConfig().getConfigurationSection("maps").getKeys(false)) {
