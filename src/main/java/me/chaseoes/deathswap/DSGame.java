@@ -20,7 +20,7 @@ public class DSGame {
     private int size;
     private ArrayList<String> players = new ArrayList<String>();
     private Random rand = new Random();
-    private GameState state;
+    private GameState state = GameState.WAITING;
     private Location lowerBound;
     private Location upperBound;
     private World world;
