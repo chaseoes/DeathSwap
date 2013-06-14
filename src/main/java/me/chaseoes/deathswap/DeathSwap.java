@@ -5,6 +5,7 @@ import java.util.HashMap;
 import me.chaseoes.deathswap.listeners.PlayerJoinListener;
 import me.chaseoes.deathswap.listeners.PlayerQuitListener;
 import me.chaseoes.deathswap.metadata.MetadataHelper;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -125,6 +126,6 @@ public class DeathSwap extends JavaPlugin {
 		if (loc != null) {
 			return SerializableLocation.getUtilities().stringToLocation(loc);
 		}
-		return null;
+		return Bukkit.getWorlds().get(0).getSpawnLocation();
 	}
 }

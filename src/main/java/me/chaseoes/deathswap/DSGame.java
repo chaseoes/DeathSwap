@@ -4,11 +4,14 @@ import me.chaseoes.deathswap.metadata.DSMetadata;
 import me.chaseoes.deathswap.metadata.MetadataHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Random;
 
 public class DSGame {
@@ -162,8 +165,15 @@ public class DSGame {
                     }
                 }
             }
+            Iterator<ArrayList<PartCoords>> it = grid.iterator();
+            while(it.hasNext()) {
+                if (it.next().isEmpty()) {
+                    it.remove();
+                }
+            }
         }
         for (int i = 0; i < players.size(); i++) {
+            locs.get(i).getBlock().getRelative(BlockFace.DOWN).setType(Material.GLOWSTONE);
             Bukkit.getPlayerExact(players.get(i)).teleport(locs.get(i));
         }
     }
