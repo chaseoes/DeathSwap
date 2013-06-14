@@ -85,6 +85,7 @@ public class DSGame {
 
     public void winGame(Player player) {
         Bukkit.broadcastMessage(player.getName() + " has won on " + name);
+        stopSwapTask();
         MetadataHelper.getDSMetadata(player).reset();
         player.teleport(DeathSwap.getInstance().getLobbyLocation());
     }
@@ -109,6 +110,7 @@ public class DSGame {
                         broadcast("Commencing swap");
                         swap();
                         currRand = rand.nextInt(diff) + minTime;
+                        currTime = 0;
                     } else {
                         currTime++;
                     }
