@@ -59,8 +59,14 @@ public class DSGame {
         } else if (players.size() < size) {
 
             players.add(player.getName());
+            MetadataHelper.createDSMetadata(player);
             DSMetadata meta = MetadataHelper.getDSMetadata(player);
+            System.out.println(meta);
             meta.setCurrentGame(this);
+            System.out.println(DeathSwap.getInstance().getMap(name).getMaxPlayers() + " " + players.size());
+            if (players.size() >= (DeathSwap.getInstance().getMap(name).getMaxPlayers() / 2)) {
+            	startGame();
+            }
         } else {
             player.sendMessage("Game " + name + " is full");
         }
@@ -92,8 +98,8 @@ public class DSGame {
     public void startSwapTimer() {
         if (swapId == -1) {
             swapId = Bukkit.getScheduler().runTaskTimer(DeathSwap.getInstance(), new Runnable() {
-                int minTime = DeathSwap.getInstance().getConfig().getInt("map." + name + ".min-swap-time");
-                int maxTime = DeathSwap.getInstance().getConfig().getInt("map." + name + ".max-swap-time");
+                int minTime = 20;
+                int maxTime = 120;
                 int diff = maxTime - minTime;
                 int currTime = 0;
                 int currRand = rand.nextInt(diff) + minTime;
@@ -165,8 +171,9 @@ public class DSGame {
     public Location getRandomLoc(Location loc1, Location loc2) {
         int dx = Math.max(loc1.getBlockX(), loc2.getBlockX()) - Math.min(loc1.getBlockX(), loc2.getBlockX());
         int dz = Math.max(loc1.getBlockZ(), loc2.getBlockZ()) - Math.min(loc1.getBlockZ(), loc2.getBlockZ());
-        int rx = rand.nextInt(dx);
-        int rz = rand.nextInt(dz);
+        System.out.println(dx);
+        int rx = rand.nextInt(dx + 1);
+        int rz = rand.nextInt( + 1);
         int x = Math.min(loc1.getBlockX(), loc2.getBlockX()) + rx;
         int z = Math.min(loc1.getBlockZ(), loc2.getBlockZ()) + rz;
         int y = world.getHighestBlockYAt(x, z);

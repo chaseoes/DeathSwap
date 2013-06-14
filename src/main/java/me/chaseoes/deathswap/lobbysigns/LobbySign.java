@@ -48,7 +48,7 @@ public class LobbySign {
 		s.setLine(0, "[DeathSwap]");
 		s.setLine(1, "Click to play:");
 		s.setLine(2, "Map: " + map.getName());
-		s.setLine(3, "Players: " + DeathSwap.getInstance().getGame(map.getName()).getPlayersIngame().size() + "/" + map.getMaxPlayers());
+		s.setLine(3, "Players: " + DeathSwap.getInstance().games.get(map.getName()).getPlayersIngame().size() + "/" + map.getMaxPlayers());
 	}
 
 }

@@ -1,8 +1,6 @@
 package me.chaseoes.deathswap.listeners;
 
 import me.chaseoes.deathswap.DeathSwap;
-import me.chaseoes.deathswap.GameType;
-import me.chaseoes.deathswap.Map;
 import me.chaseoes.deathswap.lobbysigns.LobbySign;
 
 import org.bukkit.entity.Player;
@@ -17,7 +15,7 @@ public class SignChangeListener implements Listener {
 		Player player = event.getPlayer();
 		if (player.hasPermission("dwathswap.create") && event.getLine(0).equalsIgnoreCase("[DeathSwap]")) {
 			String mapName = event.getLine(1);
-			LobbySign ls = new LobbySign(new Map(mapName, GameType.PUBLIC), event.getBlock().getLocation());
+			LobbySign ls = new LobbySign(DeathSwap.getInstance().getMap(mapName), event.getBlock().getLocation());
 			ls.create();
 			player.sendMessage(DeathSwap.getInstance().format("Successfully created a DeathSwap lobby sign!"));
 		}

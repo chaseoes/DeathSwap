@@ -14,8 +14,9 @@ public class MetadataHelper {
     public static DSMetadata getDSMetadata(Player player) {
         List<MetadataValue> vals = player.getMetadata(METADATA_NAME);
         for (MetadataValue val : vals) {
-            if (val.getOwningPlugin().equals(DeathSwap.getInstance()))
+            if (val.getOwningPlugin().getName().equalsIgnoreCase(DeathSwap.getInstance().getName())) {
                 return (DSMetadata) val.value();
+            }
         }
         return null;
     }

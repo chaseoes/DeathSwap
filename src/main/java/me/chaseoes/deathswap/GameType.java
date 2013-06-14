@@ -15,12 +15,11 @@ public enum GameType {
 	}
 
 	public static GameType get(String s) {
-		for (GameType type : GameType.values()) {
-			if (type.getName().equalsIgnoreCase(s)) {
-				return type;        
-			}
+		if (s.equalsIgnoreCase("public")) {
+			return GameType.PUBLIC;
+		} else {
+			return GameType.PRIVATE;
 		}
-		return null;
 	}
 
 }
