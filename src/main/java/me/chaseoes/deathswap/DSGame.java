@@ -59,14 +59,14 @@ public class DSGame {
     public void joinGame(Player player) {
         if (state == GameState.INGAME) {
             player.sendMessage("Game " + name + " is currently running");
-        } else if (players.size() < size) {
+        } else if (players.size() < DeathSwap.getInstance().getMap(name).getMaxPlayers()) {
 
             players.add(player.getName());
             DSMetadata meta = MetadataHelper.getDSMetadata(player);
             System.out.println(meta);
             meta.setCurrentGame(this);
             System.out.println(DeathSwap.getInstance().getMap(name).getMaxPlayers() + " " + players.size());
-            if (players.size() >= (DeathSwap.getInstance().getMap(name).getMaxPlayers() / 2)) {
+            if (players.size() >= (DeathSwap.getInstance().getMap(name).getMaxPlayers()) / 2) {
             	startGame();
             }
         } else {
@@ -75,9 +75,10 @@ public class DSGame {
     }
 
     public void leaveGame(Player player) {
+        players.remove(player.getName());
         broadcast(player.getName() + " left the DeathSwap game");
         if (state == GameState.INGAME) {
-            if (players.size() - 1 == 1) {
+            if (players.size() == 1) {
                 winGame(Bukkit.getPlayerExact(players.get(0)));
             }
         }
@@ -96,6 +97,7 @@ public class DSGame {
         broadcast("Starting game...");
         startSwapTimer();
         teleportToRandomSpawns();
+        state = GameState.INGAME;
     }
 
     public void startSwapTimer() {

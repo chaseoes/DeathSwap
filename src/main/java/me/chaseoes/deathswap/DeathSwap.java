@@ -92,7 +92,7 @@ public class DeathSwap extends JavaPlugin {
 						String mapType = strings[3];
 						try {
 							Map m = new Map(mapName);
-							MapUtilities.getUtilities().createMap(m, (Player) cs, GameType.get(mapType), 10);
+							MapUtilities.getUtilities().createMap(m, (Player) cs, GameType.get(mapType), 20);
 							maps.put(mapName, m);
 							games.put(m.getName(), new DSGame(m.getName(), 2000, m.getP1(), m.getP2()));
 							cs.sendMessage(format("Successfully created " + mapName + "!"));
