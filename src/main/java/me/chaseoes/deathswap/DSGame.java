@@ -145,7 +145,7 @@ public class DSGame {
             ArrayList<PartCoords> coords = grid.get(rand.nextInt(grid.size()));
             PartCoords pc = coords.get(rand.nextInt(coords.size()));
             Location lower = new Location(world, lowerBound.getBlockX() + (xDistOvScale * (double) pc.x), 0, lowerBound.getBlockZ() + (zDistOvScale * (double) pc.z));
-            Location upper = new Location(world, upperBound.getBlockX() + (xDistOvScale * (double) (pc.x + 1)), 0, upperBound.getBlockZ() + (zDistOvScale * (double) (pc.z + 1)));
+            Location upper = new Location(world, lowerBound.getBlockX() + (xDistOvScale * (double) (pc.x + 1)), 0, lowerBound.getBlockZ() + (zDistOvScale * (double) (pc.z + 1)));
             locs.add(getRandomLoc(lower, upper));
             for (int j = -1 + pc.x; j < (2 + pc.x); j++) {
                 for (int k = -1 + pc.z; k < (2 + pc.z); k++) {
@@ -174,11 +174,11 @@ public class DSGame {
         int dx = Math.max(loc1.getBlockX(), loc2.getBlockX()) - Math.min(loc1.getBlockX(), loc2.getBlockX());
         int dz = Math.max(loc1.getBlockZ(), loc2.getBlockZ()) - Math.min(loc1.getBlockZ(), loc2.getBlockZ());
         System.out.println(dx);
-        int rx = rand.nextInt(dx + 1);
-        int rz = rand.nextInt( + 1);
+        int rx = rand.nextInt(dx);
+        int rz = rand.nextInt(dz);
         int x = Math.min(loc1.getBlockX(), loc2.getBlockX()) + rx;
         int z = Math.min(loc1.getBlockZ(), loc2.getBlockZ()) + rz;
-        int y = world.getHighestBlockYAt(x, z);
+        int y = world.getHighestBlockYAt(x, z) + 1;
         return new Location(world, x, y, z);
     }
 

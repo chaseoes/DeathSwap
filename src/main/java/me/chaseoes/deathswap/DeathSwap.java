@@ -84,7 +84,7 @@ public class DeathSwap extends JavaPlugin {
 							Map m = new Map(mapName);
 							MapUtilities.getUtilities().createMap(m, (Player) cs, GameType.get(mapType), 10);
 							maps.put(mapName, m);
-							games.put(m.getName(), new DSGame(m.getName(), 2000, m.getP2(), m.getP2()));
+							games.put(m.getName(), new DSGame(m.getName(), 2000, m.getP1(), m.getP2()));
 							cs.sendMessage(format("Successfully created " + mapName + "!"));
 						} catch (EmptyClipboardException e) {
 							cs.sendMessage(format("You must select the map with WorldEdit first."));
