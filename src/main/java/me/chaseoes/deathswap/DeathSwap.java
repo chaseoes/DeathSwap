@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import me.chaseoes.deathswap.listeners.PlayerJoinListener;
 import me.chaseoes.deathswap.listeners.PlayerQuitListener;
+import me.chaseoes.deathswap.metadata.MetadataHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -44,6 +45,10 @@ public class DeathSwap extends JavaPlugin {
 				games.put(map, new DSGame(map, 200, maps.get(map).getP1(), maps.get(map).getP2()));
 			}
 		}
+
+        for (Player player : getServer().getOnlinePlayers()) {
+            MetadataHelper.createDSMetadata(player);
+        }
 
 		getServer().getScheduler().runTaskLater(this, new Runnable() {
 			@Override
