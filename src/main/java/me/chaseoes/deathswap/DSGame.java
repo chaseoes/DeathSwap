@@ -69,7 +69,7 @@ public class DSGame {
 
 		for (int i = 0; i < players.size(); i++) {
 			pls.get(i).teleport(locs.get((i + 1) % players.size()));
-			MetadataHelper.getDSMetadata(pls.get(i)).setLastSwappedTo(pls.get((i + 1) % players.size()));
+			MetadataHelper.getDSMetadata(pls.get(i)).setDeathBlame(pls.get((i + 1) % players.size()));
 		}
 	}
 
@@ -239,7 +239,11 @@ public class DSGame {
 		return state;
 	}
 
-	class PartCoords {
+    public String getName() {
+        return name;
+    }
+
+    class PartCoords {
 		int x;
 		int z;
 

@@ -5,19 +5,19 @@ import org.bukkit.entity.Player;
 
 public class DSMetadata {
 
-    private String lastSwappedTo = null;
+    private String deathBlame = null;
     private int swapKills = 0;
     private DSGame currentGame = null;
 
     public String getLastSwappedTo() {
-        return lastSwappedTo;
+        return deathBlame;
     }
 
-    public void setLastSwappedTo(Player lastSwappedTo) {
-        if (lastSwappedTo != null) {
-            this.lastSwappedTo = lastSwappedTo.getName();
+    public void setDeathBlame(Player deathBlame1) {
+        if (deathBlame1 != null) {
+            this.deathBlame = deathBlame1.getName();
         } else {
-            this.lastSwappedTo = null;
+            this.deathBlame = null;
         }
     }
 
@@ -47,7 +47,11 @@ public class DSMetadata {
 
     public void reset() {
         currentGame = null;
-        lastSwappedTo = null;
+        deathBlame = null;
         swapKills = 0;
+    }
+
+    public String getDeathBlame() {
+        return deathBlame;
     }
 }

@@ -2,11 +2,7 @@ package me.chaseoes.deathswap;
 
 import java.util.HashMap;
 
-import me.chaseoes.deathswap.listeners.BlockListeners;
-import me.chaseoes.deathswap.listeners.PlayerCommandPreproccessListener;
-import me.chaseoes.deathswap.listeners.PlayerDeathListener;
-import me.chaseoes.deathswap.listeners.PlayerJoinListener;
-import me.chaseoes.deathswap.listeners.PlayerQuitListener;
+import me.chaseoes.deathswap.listeners.*;
 import me.chaseoes.deathswap.metadata.MetadataHelper;
 import me.chaseoes.deathswap.utilities.DuelInfo;
 import org.bukkit.Bukkit;
@@ -20,7 +16,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.sk89q.worldedit.EmptyClipboardException;
 
-import me.chaseoes.deathswap.listeners.SignChangeListener;
 import me.chaseoes.deathswap.utilities.SerializableLocation;
 import me.chaseoes.deathswap.utilities.WorldEditUtilities;
 
@@ -47,6 +42,8 @@ public class DeathSwap extends JavaPlugin {
 		pm.registerEvents(new PlayerDeathListener(), this);
 		pm.registerEvents(new PlayerCommandPreproccessListener(), this);
 		pm.registerEvents(new BlockListeners(), this);
+        pm.registerEvents(new PlayerInteractListener(), this);
+        pm.registerEvents(new EntityDamageListener(), this);
 
 		if (getConfig().getConfigurationSection("maps") != null) {
 			for (String map : getConfig().getConfigurationSection("maps").getKeys(false)) {
