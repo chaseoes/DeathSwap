@@ -10,7 +10,6 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 
 public class MapUtilities {
 	
-    private DeathSwap plugin;
     static MapUtilities instance = new MapUtilities();
 
     private MapUtilities() {
@@ -19,10 +18,6 @@ public class MapUtilities {
 
     public static MapUtilities getUtilities() {
         return instance;
-    }
-
-    public void setup(DeathSwap p) {
-        plugin = p;
     }
     
     public void createMap(Map map, Player p, GameType type, int maxPlayers) throws EmptyClipboardException {

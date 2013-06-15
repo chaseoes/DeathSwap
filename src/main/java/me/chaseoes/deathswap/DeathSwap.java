@@ -34,7 +34,6 @@ public class DeathSwap extends JavaPlugin {
 		instance = this;
 		SerializableLocation.getUtilities().setup(this);
 		WorldEditUtilities.getWEUtilities().setup(this);
-		MapUtilities.getUtilities().setup(this);
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new SignChangeListener(), this);
 		pm.registerEvents(new PlayerJoinListener(), this);
@@ -48,7 +47,7 @@ public class DeathSwap extends JavaPlugin {
 		if (getConfig().getConfigurationSection("maps") != null) {
 			for (String map : getConfig().getConfigurationSection("maps").getKeys(false)) {
 				maps.put(map, new Map(map));
-				games.put(map, new DSGame(map, 200, maps.get(map).getP1(), maps.get(map).getP2()));
+				games.put(map, new DSGame(map, maps.get(map).getP1(), maps.get(map).getP2()));
 			}
 		}
 
@@ -59,7 +58,8 @@ public class DeathSwap extends JavaPlugin {
 		getServer().getScheduler().runTaskLater(this, new Runnable() {
 			@Override
 			public void run() {
-				getServer().broadcastMessage(format("Server reloaded.\nChanges to the DeathSwap plugin have been made!"));
+				getServer().broadcastMessage(format("Server reloaded."));
+				getServer().broadcastMessage(format("Changes to the DeathSwap plugin have been made!"));
 			}
 		}, 40L);
 	}
@@ -193,7 +193,7 @@ public class DeathSwap extends JavaPlugin {
 								Map m = new Map(mapName);
 								MapUtilities.getUtilities().createMap(m, (Player) cs, GameType.get(mapType), 20);
 								maps.put(mapName, m);
-								games.put(m.getName(), new DSGame(m.getName(), 2000, m.getP1(), m.getP2()));
+								games.put(m.getName(), new DSGame(m.getName(), m.getP1(), m.getP2()));
 								cs.sendMessage(format("Successfully created " + mapName + "!"));
 							} catch (EmptyClipboardException e) {
 								cs.sendMessage(format("You must select the map with WorldEdit first."));

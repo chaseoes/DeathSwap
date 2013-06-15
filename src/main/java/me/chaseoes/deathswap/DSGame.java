@@ -1,13 +1,12 @@
 package me.chaseoes.deathswap;
 
+import me.chaseoes.deathswap.lobbysigns.LobbySign;
 import me.chaseoes.deathswap.metadata.DSMetadata;
 import me.chaseoes.deathswap.metadata.MetadataHelper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 
@@ -20,7 +19,6 @@ import java.util.Random;
 public class DSGame {
 
 	private String name;
-	private int size;
 	private ArrayList<String> players = new ArrayList<String>();
 	private LinkedHashMap<Location, BlockState> changedBlocks = new LinkedHashMap<Location, BlockState>();
 	private Random rand = new Random();
@@ -29,13 +27,14 @@ public class DSGame {
 	private Location upperBound;
 	private World world;
 	private int swapId = -1;
+	private LobbySign sign;
 
-	public DSGame(String name, int size, Location loc1, Location loc2) {
+	public DSGame(String name, Location loc1, Location loc2) {
 		this.name = name;
-		this.size = size;
 		lowerBound = new Location(loc1.getWorld(), Math.min(loc1.getBlockX(), loc2.getBlockX()), 0, Math.min(loc1.getBlockZ(), loc2.getBlockZ()));
 		upperBound = new Location(loc1.getWorld(), Math.max(loc1.getBlockX(), loc2.getBlockX()), loc1.getWorld().getMaxHeight(), Math.max(loc1.getBlockZ(), loc2.getBlockZ()));
 		world = loc1.getWorld();
+		sign = new LobbySign(DeathSwap.getInstance().getMap(name));
 	}
 
 	public ArrayList<String> getPlayersIngame() {
@@ -97,6 +96,7 @@ public class DSGame {
 				startGame();
 			}
 		}
+		sign.update();
 	}
 
 	public void leaveGame(Player player) {
@@ -109,6 +109,7 @@ public class DSGame {
 		}
 		MetadataHelper.getDSMetadata(player).reset();
 		player.teleport(DeathSwap.getInstance().getLobbyLocation());
+		sign.update();
 	}
 
 	public void winGame(Player player) {
@@ -127,6 +128,7 @@ public class DSGame {
 		players.clear();
 		state = GameState.WAITING;
 		rollbackBlocks();
+		sign.update();
 	}
 
 	public void startGame() {
@@ -174,6 +176,7 @@ public class DSGame {
 		double xDistOvScale = xDist / scale;
 		double zDistOvScale = zDist / scale;
 		ArrayList<ArrayList<PartCoords>> grid = new ArrayList<ArrayList<PartCoords>>((int) scale);
+		
 		for (int i = 0; i < scale; i++) {
 			ArrayList<PartCoords> arrayList = new ArrayList<PartCoords>((int) scale);
 			grid.add(arrayList);
@@ -181,13 +184,16 @@ public class DSGame {
 				arrayList.add(new PartCoords(i, j));
 			}
 		}
+		
 		ArrayList<Location> locs = new ArrayList<Location>(players.size());
+		
 		for (int i = 0; i < players.size(); i++) {
 			ArrayList<PartCoords> coords = grid.get(rand.nextInt(grid.size()));
 			PartCoords pc = coords.get(rand.nextInt(coords.size()));
 			Location lower = new Location(world, lowerBound.getBlockX() + (xDistOvScale * (double) pc.x), 0, lowerBound.getBlockZ() + (zDistOvScale * (double) pc.z));
 			Location upper = new Location(world, lowerBound.getBlockX() + (xDistOvScale * (double) (pc.x + 1)), 0, lowerBound.getBlockZ() + (zDistOvScale * (double) (pc.z + 1)));
 			locs.add(getRandomLoc(lower, upper));
+			
 			for (int j = -1 + pc.x; j < (2 + pc.x); j++) {
 				for (int k = -1 + pc.z; k < (2 + pc.z); k++) {
 					if (j < 0 || k < 0) {
@@ -204,13 +210,16 @@ public class DSGame {
 					}
 				}
 			}
+			
 			Iterator<ArrayList<PartCoords>> it = grid.iterator();
 			while(it.hasNext()) {
 				if (it.next().isEmpty()) {
 					it.remove();
 				}
 			}
+			
 		}
+		
 		for (int i = 0; i < players.size(); i++) {
 			Bukkit.getPlayerExact(players.get(i)).teleport(locs.get(i));
 		}
