@@ -6,9 +6,11 @@ import me.chaseoes.deathswap.metadata.MetadataHelper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,16 +102,17 @@ public class DSGame {
 		if (state == GameState.INGAME) {
 			player.sendMessage(DeathSwap.getInstance().format("That game is currently in progress."));
 		} else if (DeathSwap.getInstance().getMap(name).getType() == GameType.PRIVATE) {
+			clearInventory(player);
 			//TODO: Approval of join goes here
 			players.add(player.getName());
 			MetadataHelper.getDSMetadata(player).setCurrentGame(this);
 			player.sendMessage(DeathSwap.getInstance().format("Successfully joined the map " + name + "!"));
 			broadcast(DeathSwap.getInstance().format(player.getName() + " has joined the game!"));
-			player.getInventory().clear();
 			if (players.size() == 2) {
 				startGame();
 			}
 		} else if (players.size() < DeathSwap.getInstance().getMap(name).getMaxPlayers()) {
+			clearInventory(player);
 			players.add(player.getName());
 			DSMetadata meta = MetadataHelper.getDSMetadata(player);
 			meta.setCurrentGame(this);
@@ -121,9 +124,15 @@ public class DSGame {
 		}
 		sign.update();
 	}
+	
+	public void clearInventory(Player player) {
+		DeathSwap.getInstance().getServer().dispatchCommand(DeathSwap.getInstance().getServer().getConsoleSender(), "clear " + player.getName());
+	}
 
 	public void leaveGame(Player player) {
 		players.remove(player.getName());
+		clearInventory(player);
+		player.getInventory().addItem(new ItemStack(Material.WATCH, 1));
 		broadcast(DeathSwap.getInstance().format(player.getName() + " has left the game."));
 		if (state == GameState.INGAME) {
 			if (players.size() == 1) {
