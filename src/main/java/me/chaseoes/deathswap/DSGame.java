@@ -5,6 +5,7 @@ import me.chaseoes.deathswap.metadata.DSMetadata;
 import me.chaseoes.deathswap.metadata.MetadataHelper;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -132,6 +133,7 @@ public class DSGame {
 	public void removeFly(Player player){
 		player.setFlying(false);
 		player.setAllowFlight(false);
+		player.setGameMode(GameMode.SURVIVAL);
 	}
 
 	public void leaveGame(Player player) {
