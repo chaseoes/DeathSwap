@@ -4,6 +4,7 @@ import me.chaseoes.deathswap.lobbysigns.LobbySign;
 import me.chaseoes.deathswap.metadata.DSMetadata;
 import me.chaseoes.deathswap.metadata.MetadataHelper;
 
+import me.chaseoes.deathswap.utilities.SwapState;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -83,17 +84,18 @@ public class DSGame {
 
 	public void swap() {
 		Collections.shuffle(players, rand);
-		ArrayList<Location> locs = new ArrayList<Location>();
+		ArrayList<SwapState> states = new ArrayList<SwapState>();
 		ArrayList<Player> pls = new ArrayList<Player>();
+        ArrayList<VehicleWrapper> vehicles = new ArrayList<VehicleWrapper>();
 
 		for (String pl : players) {
 			Player p = Bukkit.getPlayer(pl);
-			locs.add(p.getLocation());
+			states.add(SwapState.getSwapState(p));
 			pls.add(p);
 		}
 
 		for (int i = 0; i < players.size(); i++) {
-			pls.get(i).teleport(locs.get((i + 1) % players.size()));
+			states.get((i + 1) % players.size()).applySwapState(pls.get(i));
 			MetadataHelper.getDSMetadata(pls.get(i)).setDeathBlame(pls.get((i + 1) % players.size()));
 		}
 	}
@@ -304,4 +306,8 @@ public class DSGame {
 			this.z = z;
 		}
 	}
+
+    class VehicleWrapper {
+
+    }
 }
