@@ -236,11 +236,11 @@ public class DeathSwap extends JavaPlugin {
 
 			if (strings[0].equalsIgnoreCase("help")) {
 				cs.sendMessage(format("DeathSwap Commands:"));
-				cs.sendMessage(ChatColor.DARK_GRAY + "/ds" + ChatColor.GRAY + ": General plugin information.");
-				cs.sendMessage(ChatColor.DARK_GRAY + "/ds join <map name>" + ChatColor.GRAY + ": Joins the specified map.");
-				cs.sendMessage(ChatColor.DARK_GRAY + "/ds leave" + ChatColor.GRAY + ": Leave the game you're in.");
-				cs.sendMessage(ChatColor.DARK_GRAY + "/ds create map <map name> <game type>" + ChatColor.GRAY + ": Create a DeathSwap map.");
-				cs.sendMessage(ChatColor.DARK_GRAY + "/ds setmax <map> <#>" + ChatColor.GRAY + ": Set the max players for a map.");
+				cs.sendMessage(ChatColor.GREEN + "/ds" + ChatColor.GRAY + ": General plugin information.");
+				cs.sendMessage(ChatColor.GREEN + "/ds join <map name>" + ChatColor.GRAY + ": Joins the specified map.");
+				cs.sendMessage(ChatColor.GREEN + "/ds leave" + ChatColor.GRAY + ": Leave the game you're in.");
+				cs.sendMessage(ChatColor.GREEN + "/ds create map <map name> <game type>" + ChatColor.GRAY + ": Create a DeathSwap map.");
+				cs.sendMessage(ChatColor.GREEN + "/ds setmax <map> <#>" + ChatColor.GRAY + ": Set the max players for a map.");
 			}
 		}
 		return true;
