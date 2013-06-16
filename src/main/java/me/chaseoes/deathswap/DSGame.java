@@ -86,7 +86,6 @@ public class DSGame {
 		Collections.shuffle(players, rand);
 		ArrayList<SwapState> states = new ArrayList<SwapState>();
 		ArrayList<Player> pls = new ArrayList<Player>();
-        ArrayList<VehicleWrapper> vehicles = new ArrayList<VehicleWrapper>();
 
 		for (String pl : players) {
 			Player p = Bukkit.getPlayer(pl);
@@ -306,8 +305,4 @@ public class DSGame {
 			this.z = z;
 		}
 	}
-
-    class VehicleWrapper {
-
-    }
 }
