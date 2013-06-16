@@ -113,6 +113,7 @@ public class DSGame {
 			}
 		} else if (players.size() < DeathSwap.getInstance().getMap(name).getMaxPlayers()) {
 			clearInventory(player);
+			removeFly(player)
 			players.add(player.getName());
 			DSMetadata meta = MetadataHelper.getDSMetadata(player);
 			meta.setCurrentGame(this);
@@ -127,6 +128,10 @@ public class DSGame {
 	
 	public void clearInventory(Player player) {
 		DeathSwap.getInstance().getServer().dispatchCommand(DeathSwap.getInstance().getServer().getConsoleSender(), "clear " + player.getName());
+	}
+	public void removeFly(Player player){
+		player.getName().setFlying(false);
+		player.getName().setAllowFlight(false);
 	}
 
 	public void leaveGame(Player player) {
