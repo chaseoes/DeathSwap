@@ -133,6 +133,7 @@ public class DSGame {
 		MetadataHelper.getDSMetadata(player).reset();
 		player.teleport(DeathSwap.getInstance().getLobbyLocation());
 		sign.update();
+		showOtherPlayers(player);
 	}
 
 	public void winGame(Player player) {
