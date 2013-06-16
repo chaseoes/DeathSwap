@@ -115,7 +115,7 @@ public class DSGame {
 			meta.setCurrentGame(this);
 			player.sendMessage(DeathSwap.getInstance().format("Successfully joined the map " + name + "!"));
 			broadcast(DeathSwap.getInstance().format(player.getName() + " has joined the game!"));
-			if (players.size() >= (DeathSwap.getInstance().getMap(name).getMaxPlayers()) / 2) {
+			if (players.size() >= (DeathSwap.getInstance().getMap(name).getMaxPlayers())) {
 				startGame();
 			}
 		}
