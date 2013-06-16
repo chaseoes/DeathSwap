@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Random;
 
 public class DSGame {
@@ -52,6 +53,28 @@ public class DSGame {
 	public void addBlock(BlockState state) {
 		if (!changedBlocks.containsKey(state.getLocation())) {
 			changedBlocks.put(state.getLocation(), state);
+		}
+	}
+	
+	private void hideOtherPlayers(Player player) {
+		List<Player> playersToHide = new ArrayList<Player>();
+		for (Player p : DeathSwap.getInstance().getServer().getOnlinePlayers()) {
+			playersToHide.add(p);
+		}
+		
+		for (String p : getPlayersIngame()) {
+			Player pl = DeathSwap.getInstance().getServer().getPlayerExact(p);
+			playersToHide.remove(pl);
+		}
+		
+		for (Player p : playersToHide) {
+			player.hidePlayer(p);
+		}
+	}
+	
+	private void showOtherPlayers(Player player) {
+		for (Player p : DeathSwap.getInstance().getServer().getOnlinePlayers()) {
+			player.showPlayer(p);
 		}
 	}
 
@@ -124,6 +147,7 @@ public class DSGame {
 			Player player = Bukkit.getPlayerExact(p);
 			MetadataHelper.getDSMetadata(player).reset();
 			player.teleport(DeathSwap.getInstance().getLobbyLocation());
+			showOtherPlayers(player);
 		}
 		players.clear();
 		state = GameState.WAITING;
@@ -221,7 +245,9 @@ public class DSGame {
 		}
 		
 		for (int i = 0; i < players.size(); i++) {
-			Bukkit.getPlayerExact(players.get(i)).teleport(locs.get(i));
+			Player player = DeathSwap.getInstance().getServer().getPlayerExact(players.get(i));
+			player.teleport(locs.get(i));
+			hideOtherPlayers(player);
 		}
 	}
 

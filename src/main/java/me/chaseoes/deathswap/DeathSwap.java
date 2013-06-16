@@ -43,6 +43,7 @@ public class DeathSwap extends JavaPlugin {
 		pm.registerEvents(new BlockListeners(), this);
         pm.registerEvents(new PlayerInteractListener(), this);
         pm.registerEvents(new EntityDamageListener(), this);
+        pm.registerEvents(new PlayerChatListener(), this);
 
 		if (getConfig().getConfigurationSection("maps") != null) {
 			for (String map : getConfig().getConfigurationSection("maps").getKeys(false)) {
