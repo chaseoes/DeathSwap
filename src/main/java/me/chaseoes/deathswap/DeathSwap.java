@@ -25,9 +25,6 @@ public class DeathSwap extends JavaPlugin {
 	HashMap<String, Map> maps = new HashMap<String, Map>();
 	public HashMap<String, DSGame> games = new HashMap<String, DSGame>();
 	public HashMap<String, DuelInfo> needsToAccept = new HashMap<String, DuelInfo>();
-	public Location loc;
-	public Location checkLocation;
-	public int attempts = 0;
 
 	public static DeathSwap getInstance() {
 		return instance;
@@ -82,10 +79,6 @@ public class DeathSwap extends JavaPlugin {
 				cs.sendMessage(format("Version " + getDescription().getVersion() + " by chaseoes."));
 				cs.sendMessage(format("Type &b/ds help &7for help."));
 				return true;
-			}
-			
-			if (strings[0].equalsIgnoreCase("checklocation")) {
-				checkLocation = ((Player) cs).getLocation();
 			}
 
 			if (strings[0].equalsIgnoreCase("join")) {
