@@ -25,6 +25,9 @@ public class DeathSwap extends JavaPlugin {
 	HashMap<String, Map> maps = new HashMap<String, Map>();
 	public HashMap<String, DSGame> games = new HashMap<String, DSGame>();
 	public HashMap<String, DuelInfo> needsToAccept = new HashMap<String, DuelInfo>();
+	public Location loc;
+	public Location checkLocation;
+	public int attempts = 0;
 
 	public static DeathSwap getInstance() {
 		return instance;
@@ -80,6 +83,10 @@ public class DeathSwap extends JavaPlugin {
 				cs.sendMessage(format("Type &b/ds help &7for help."));
 				return true;
 			}
+			
+			if (strings[0].equalsIgnoreCase("checklocation")) {
+				checkLocation = ((Player) cs).getLocation();
+			}
 
 			if (strings[0].equalsIgnoreCase("join")) {
                 if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
@@ -91,6 +98,30 @@ public class DeathSwap extends JavaPlugin {
 							games.get(map).joinGame((Player)cs);
 						} else {
 							cs.sendMessage(format("That map does not exist!"));
+						}
+					} else {
+						cs.sendMessage(format("Incorrect command syntax."));
+						cs.sendMessage(format("Type &b/ds help &7for help."));
+					}
+				} else {
+					cs.sendMessage(format("You don't have permission."));
+				}
+			}
+			
+			if (strings[0].equalsIgnoreCase("join")) {
+                if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
+                    cs.sendMessage(format("You are already in a game!"));
+                } else if (cs.hasPermission("deathswap.play")) {
+					if (strings.length == 2) {
+						String map = strings[1];
+						if (games.containsKey(map)) {
+							games.get(map).joinGame((Player)cs);
+						} else {
+							cs.sendMessage(format("That map does not exist!"));
+						}
+					} else if (strings.length == 1) {
+						if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
+							
 						}
 					} else {
 						cs.sendMessage(format("Incorrect command syntax."));
@@ -239,6 +270,7 @@ public class DeathSwap extends JavaPlugin {
 				cs.sendMessage(ChatColor.GREEN + "/ds" + ChatColor.GRAY + ": General plugin information.");
 				cs.sendMessage(ChatColor.GREEN + "/ds join <map name>" + ChatColor.GRAY + ": Joins the specified map.");
 				cs.sendMessage(ChatColor.GREEN + "/ds leave" + ChatColor.GRAY + ": Leave the game you're in.");
+				cs.sendMessage(ChatColor.GREEN + "/ds list [map]" + ChatColor.GRAY + ": List players in the given map.");
 				cs.sendMessage(ChatColor.GREEN + "/ds create map <map name> <game type>" + ChatColor.GRAY + ": Create a DeathSwap map.");
 				cs.sendMessage(ChatColor.GREEN + "/ds setmax <map> <#>" + ChatColor.GRAY + ": Set the max players for a map.");
 			}
