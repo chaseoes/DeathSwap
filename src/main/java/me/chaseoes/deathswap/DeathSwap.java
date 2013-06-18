@@ -1,6 +1,7 @@
 package me.chaseoes.deathswap;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import me.chaseoes.deathswap.listeners.*;
 import me.chaseoes.deathswap.metadata.MetadataHelper;
@@ -25,6 +26,7 @@ public class DeathSwap extends JavaPlugin {
 	HashMap<String, Map> maps = new HashMap<String, Map>();
 	public HashMap<String, DSGame> games = new HashMap<String, DSGame>();
 	public HashMap<String, DuelInfo> needsToAccept = new HashMap<String, DuelInfo>();
+	public HashSet<String> disabled = new HashSet<String>();
 
 	public static DeathSwap getInstance() {
 		return instance;
@@ -88,7 +90,11 @@ public class DeathSwap extends JavaPlugin {
 					if (strings.length == 2) {
 						String map = strings[1];
 						if (games.containsKey(map)) {
-							games.get(map).joinGame((Player)cs);
+							if (!disabled.contains(map)) {
+								games.get(map).joinGame((Player)cs);
+							} else {
+								cs.sendMessage(format("That map is currently disabled."));
+							}
 						} else {
 							cs.sendMessage(format("That map does not exist!"));
 						}
@@ -170,6 +176,7 @@ public class DeathSwap extends JavaPlugin {
 					cs.sendMessage(format("You don't have permission."));
 				}
 			}
+			
 
 			if (strings[0].equalsIgnoreCase("accept")) {
 				if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
@@ -210,8 +217,48 @@ public class DeathSwap extends JavaPlugin {
 						if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
 							DSGame game = MetadataHelper.getDSMetadata((Player) cs).getCurrentGame();
 							game.leaveGame((Player) cs);
+							cs.sendMessage(format("You have left the game."));
 						} else {
 							cs.sendMessage(format("You aren't in a game."));
+						}
+					} else {
+						cs.sendMessage(format("Incorrect command syntax."));
+						cs.sendMessage(format("Type &b/ds help &7for help."));
+					}
+				} else {
+					cs.sendMessage(format("You don't have permission."));
+				}
+			}
+			
+			if (strings[0].equalsIgnoreCase("enable")) {
+				if (cs.hasPermission("deathswap.create")) {
+					if (strings.length == 2) {
+						String map = strings[1];
+						if (games.containsKey(map)) {
+							disabled.remove(map);
+							cs.sendMessage(format("Successfully enabled " + map + "."));
+						} else {
+							cs.sendMessage(format("That map does not exist!"));
+						}
+					} else {
+						cs.sendMessage(format("Incorrect command syntax."));
+						cs.sendMessage(format("Type &b/ds help &7for help."));
+					}
+				} else {
+					cs.sendMessage(format("You don't have permission."));
+				}
+			}
+			
+			if (strings[0].equalsIgnoreCase("disable")) {
+				if (cs.hasPermission("deathswap.create")) {
+					if (strings.length == 2) {
+						String map = strings[1];
+						if (games.containsKey(map)) {
+							disabled.add(map);
+							games.get(map).stopGame();
+							cs.sendMessage(format("Successfully disabled " + map + "."));
+						} else {
+							cs.sendMessage(format("That map does not exist!"));
 						}
 					} else {
 						cs.sendMessage(format("Incorrect command syntax."));
