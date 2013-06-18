@@ -1,6 +1,7 @@
 package me.chaseoes.deathswap.listeners;
 
 import me.chaseoes.deathswap.DeathSwap;
+import me.chaseoes.deathswap.metadata.MetadataHelper;
 
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -18,7 +19,11 @@ public class PlayerInteractListener implements Listener {
 				if (s.getLine(1).equalsIgnoreCase("Click to play:")) {
 					String map = s.getLine(2).replace("Map: ", "");
 					if (DeathSwap.getInstance().games.containsKey(map)) {
-						event.getPlayer().performCommand("ds join " + map);
+						if (MetadataHelper.getDSMetadata(event.getPlayer()).isIngame()) {
+							event.getPlayer().performCommand("ds leave");
+						} else {
+							event.getPlayer().performCommand("ds join " + map);
+						}
 						event.setCancelled(true);
 					}
 				}

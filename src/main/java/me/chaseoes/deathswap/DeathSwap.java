@@ -41,9 +41,9 @@ public class DeathSwap extends JavaPlugin {
 		pm.registerEvents(new PlayerDeathListener(), this);
 		pm.registerEvents(new PlayerCommandPreproccessListener(), this);
 		pm.registerEvents(new BlockListeners(), this);
-        pm.registerEvents(new PlayerInteractListener(), this);
-        pm.registerEvents(new EntityDamageListener(), this);
-        pm.registerEvents(new PlayerChatListener(), this);
+		pm.registerEvents(new PlayerInteractListener(), this);
+		pm.registerEvents(new EntityDamageListener(), this);
+		pm.registerEvents(new PlayerChatListener(), this);
 
 		if (getConfig().getConfigurationSection("maps") != null) {
 			for (String map : getConfig().getConfigurationSection("maps").getKeys(false)) {
@@ -82,9 +82,9 @@ public class DeathSwap extends JavaPlugin {
 			}
 
 			if (strings[0].equalsIgnoreCase("join")) {
-                if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
-                    cs.sendMessage(format("You are already in a game!"));
-                } else if (cs.hasPermission("deathswap.play")) {
+				if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
+					cs.sendMessage(format("You are already in a game!"));
+				} else if (cs.hasPermission("deathswap.play")) {
 					if (strings.length == 2) {
 						String map = strings[1];
 						if (games.containsKey(map)) {
@@ -100,22 +100,36 @@ public class DeathSwap extends JavaPlugin {
 					cs.sendMessage(format("You don't have permission."));
 				}
 			}
-			
-			if (strings[0].equalsIgnoreCase("join")) {
-                if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
-                    cs.sendMessage(format("You are already in a game!"));
-                } else if (cs.hasPermission("deathswap.play")) {
-					if (strings.length == 2) {
-						String map = strings[1];
-						if (games.containsKey(map)) {
-							games.get(map).joinGame((Player)cs);
-						} else {
-							cs.sendMessage(format("That map does not exist!"));
+
+			if (strings[0].equalsIgnoreCase("list")) {
+				if (cs.hasPermission("deathswap.play")) {
+					if (strings.length >= 1) {
+						DSGame game = null;
+						if (strings.length == 2) {
+							String map = strings[1];
+							if (games.containsKey(map)) {
+								game = games.get(map);
+							} else {
+								cs.sendMessage(format("That map does not exist!"));
+								return true;
+							}
 						}
-					} else if (strings.length == 1) {
-						if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
-							
+						
+						if (strings.length == 1) {
+							if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
+								game = MetadataHelper.getDSMetadata((Player) cs).getCurrentGame();
+							} else {
+								cs.sendMessage(format("You're not in a game!"));
+								return true;
+							}
 						}
+						
+						StringBuilder sb = new StringBuilder();
+						for (String player : game.getPlayersIngame()) {
+							sb.append(player + ", ");
+						}
+						
+						cs.sendMessage(format(sb.toString().substring(0, sb.toString().length() - 2)));
 					} else {
 						cs.sendMessage(format("Incorrect command syntax."));
 						cs.sendMessage(format("Type &b/ds help &7for help."));
@@ -124,30 +138,30 @@ public class DeathSwap extends JavaPlugin {
 					cs.sendMessage(format("You don't have permission."));
 				}
 			}
-			
+
 			if (strings[0].equalsIgnoreCase("duel")) {
-                if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
-                    cs.sendMessage(format("You are already in a game!"));
-                } else if (cs.hasPermission("deathswap.play")) {
+				if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
+					cs.sendMessage(format("You are already in a game!"));
+				} else if (cs.hasPermission("deathswap.play")) {
 					if (strings.length == 3) {
 						String map = strings[1];
 						String p = strings[2];
 						Player player = getServer().getPlayer(p);
 						if (player == null) {
-                            cs.sendMessage(format("That player isn't online!"));
-                        } else if (!maps.containsKey(map)) {
-                            cs.sendMessage(format("That map does not exist!"));
-                        } else if (maps.get(map).getType() != GameType.PRIVATE) {
-                            cs.sendMessage(format("That map is not for dueling!"));
-                        } else if (games.get(map).getState() != GameState.WAITING) {
-                            cs.sendMessage(format("That map is currently ingame!"));
-                        } else if (MetadataHelper.getDSMetadata(player).isIngame()) {
-                            cs.sendMessage(format(p + " is already in a game!"));
-                        } else {
-				    		player.sendMessage(format(cs.getName() + "has requested to duel you in a DeathSwap game!"));
-                            player.sendMessage(format("Type &b/ds accept &7to accept their request."));
-	    					needsToAccept.put(player.getName(), new DuelInfo(cs.getName(), map));
-                        }
+							cs.sendMessage(format("That player isn't online!"));
+						} else if (!maps.containsKey(map)) {
+							cs.sendMessage(format("That map does not exist!"));
+						} else if (maps.get(map).getType() != GameType.PRIVATE) {
+							cs.sendMessage(format("That map is not for dueling!"));
+						} else if (games.get(map).getState() != GameState.WAITING) {
+							cs.sendMessage(format("That map is currently ingame!"));
+						} else if (MetadataHelper.getDSMetadata(player).isIngame()) {
+							cs.sendMessage(format(p + " is already in a game!"));
+						} else {
+							player.sendMessage(format(cs.getName() + "has requested to duel you in a DeathSwap game!"));
+							player.sendMessage(format("Type &b/ds accept &7to accept their request."));
+							needsToAccept.put(player.getName(), new DuelInfo(cs.getName(), map));
+						}
 					} else {
 						cs.sendMessage(format("Incorrect command syntax."));
 						cs.sendMessage(format("Type &b/ds help &7for help."));
@@ -156,31 +170,31 @@ public class DeathSwap extends JavaPlugin {
 					cs.sendMessage(format("You don't have permission."));
 				}
 			}
-			
+
 			if (strings[0].equalsIgnoreCase("accept")) {
-                if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
-                    cs.sendMessage(format("You are already in a game!"));
-                } else if (cs.hasPermission("deathswap.play")) {
+				if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
+					cs.sendMessage(format("You are already in a game!"));
+				} else if (cs.hasPermission("deathswap.play")) {
 					if (strings.length == 1) {
 						if (!needsToAccept.containsKey(cs.getName())) {
-                            cs.sendMessage(format("Nobody has requested to duel you!"));
+							cs.sendMessage(format("Nobody has requested to duel you!"));
 						} else {
-                            DuelInfo info = needsToAccept.get(cs.getName());
-                            needsToAccept.remove(cs.getName());
-                            Player chall = Bukkit.getPlayerExact(info.getChallenger());
-                            DSGame game = games.get(info.getMap());
-                            if (chall == null) {
-                                cs.sendMessage(format("Your challenger is no longer online!"));
-                            } else if (game.getState() != GameState.WAITING) {
-                                cs.sendMessage(format("The requested map is already ingame!"));
-                            } else if (MetadataHelper.getDSMetadata(chall).isIngame()) {
-                                cs.sendMessage(format("Your challenger is already in a game!"));
-                            } else {
-                                cs.sendMessage(format("Accepted request"));
-                                game.joinGame(chall);
-                                game.joinGame((Player) cs);
-                            }
-                        }
+							DuelInfo info = needsToAccept.get(cs.getName());
+							needsToAccept.remove(cs.getName());
+							Player chall = Bukkit.getPlayerExact(info.getChallenger());
+							DSGame game = games.get(info.getMap());
+							if (chall == null) {
+								cs.sendMessage(format("Your challenger is no longer online!"));
+							} else if (game.getState() != GameState.WAITING) {
+								cs.sendMessage(format("The requested map is already ingame!"));
+							} else if (MetadataHelper.getDSMetadata(chall).isIngame()) {
+								cs.sendMessage(format("Your challenger is already in a game!"));
+							} else {
+								cs.sendMessage(format("Accepted request"));
+								game.joinGame(chall);
+								game.joinGame((Player) cs);
+							}
+						}
 					} else {
 						cs.sendMessage(format("Incorrect command syntax."));
 						cs.sendMessage(format("Type &b/ds help &7for help."));
