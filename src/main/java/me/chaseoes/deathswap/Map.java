@@ -2,6 +2,7 @@ package me.chaseoes.deathswap;
 
 import me.chaseoes.deathswap.utilities.SerializableLocation;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 public class Map {
@@ -45,10 +46,16 @@ public class Map {
 	}
 
 	public Location getP1() {
+        if (p1.getWorld() == null) {
+            p1 = SerializableLocation.getUtilities().stringToLocation(DeathSwap.getInstance().getConfig().getString(getPath() + "region.p1"));
+        }
 		return p1;
 	}
 
 	public Location getP2() {
+        if (p2.getWorld() == null) {
+            p2 = SerializableLocation.getUtilities().stringToLocation(DeathSwap.getInstance().getConfig().getString(getPath() + "region.p2"));
+        }
 		return p2;
 	}
 
@@ -85,5 +92,6 @@ public class Map {
     public void setRollback(RollbackType rollback) {
         this.rollback = rollback;
         DeathSwap.getInstance().getConfig().set(getPath() + "rollback", rollback);
+        DeathSwap.getInstance().saveConfig();
     }
 }

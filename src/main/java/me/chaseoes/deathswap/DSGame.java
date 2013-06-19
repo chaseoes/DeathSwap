@@ -110,30 +110,34 @@ public class DSGame {
 	}
 
 
-	public void joinGame(Player player) {
-		if (state == GameState.INGAME) {
-			player.sendMessage(DeathSwap.getInstance().format("That game is currently in progress."));
-		} else if (DeathSwap.getInstance().getMap(name).getType() == GameType.PRIVATE) {
-			//TODO: Approval of join goes here
-			players.add(player.getName());
-			MetadataHelper.getDSMetadata(player).setCurrentGame(this);
-			player.sendMessage(DeathSwap.getInstance().format("Successfully joined the map " + name + "!"));
-			broadcast(DeathSwap.getInstance().format(player.getName() + " has joined the game!"));
-			if (players.size() == 2) {
-				startGame();
-			}
-		} else if (players.size() < DeathSwap.getInstance().getMap(name).getMaxPlayers()) {
-			players.add(player.getName());
-			DSMetadata meta = MetadataHelper.getDSMetadata(player);
-			meta.setCurrentGame(this);
-			player.sendMessage(DeathSwap.getInstance().format("Successfully joined the map " + name + "!"));
-			broadcast(DeathSwap.getInstance().format(player.getName() + " has joined the game!"));
-			if (players.size() >= (DeathSwap.getInstance().getMap(name).getMaxPlayers())) {
-				startGame();
-			}
-		}
-		sign.update();
-	}
+    public void joinGame(Player player) {
+        if (state == GameState.INGAME) {
+            player.sendMessage(DeathSwap.getInstance().format("That game is currently in progress."));
+        } else if (state == GameState.WAITING) {
+            if (DeathSwap.getInstance().getMap(name).getType() == GameType.PRIVATE) {
+                //TODO: Approval of join goes here
+                players.add(player.getName());
+                MetadataHelper.getDSMetadata(player).setCurrentGame(this);
+                player.sendMessage(DeathSwap.getInstance().format("Successfully joined the map " + name + "!"));
+                broadcast(DeathSwap.getInstance().format(player.getName() + " has joined the game!"));
+                if (players.size() == 2) {
+                    startGame();
+                }
+            } else if (players.size() < DeathSwap.getInstance().getMap(name).getMaxPlayers()) {
+                players.add(player.getName());
+                DSMetadata meta = MetadataHelper.getDSMetadata(player);
+                meta.setCurrentGame(this);
+                player.sendMessage(DeathSwap.getInstance().format("Successfully joined the map " + name + "!"));
+                broadcast(DeathSwap.getInstance().format(player.getName() + " has joined the game!"));
+                if (players.size() >= (DeathSwap.getInstance().getMap(name).getMaxPlayers())) {
+                    startGame();
+                }
+            }
+        } else if (state == GameState.ROLLBACK) {
+            player.sendMessage(DeathSwap.getInstance().format("That game is currently rolling back."));
+        }
+        sign.update();
+    }
 
 	public void leaveGame(Player player) {
 		players.remove(player.getName());
