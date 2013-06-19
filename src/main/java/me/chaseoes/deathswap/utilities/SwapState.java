@@ -1,16 +1,17 @@
 package me.chaseoes.deathswap.utilities;
 
+import me.chaseoes.deathswap.metadata.MetadataHelper;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.Inventory;
 
 public class SwapState {
 
     private final String owner;
     private Location loc;
     private Entity vehicle;
-    private InventoryView inv;
+    private Inventory inv;
     private org.bukkit.util.Vector velocity;
     private float fallDistance;
 
@@ -22,7 +23,7 @@ public class SwapState {
         SwapState state = new SwapState(player);
         state.loc = player.getLocation();
         state.vehicle = player.getVehicle();
-        state.inv = player.getOpenInventory();
+        state.inv = MetadataHelper.getDSMetadata(player).getLastOpened();
         state.velocity = player.getVelocity();
         state.fallDistance = player.getFallDistance();
 

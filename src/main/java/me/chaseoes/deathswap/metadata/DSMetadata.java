@@ -1,13 +1,16 @@
 package me.chaseoes.deathswap.metadata;
 
 import me.chaseoes.deathswap.DSGame;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 public class DSMetadata {
 
     private String deathBlame = null;
     private int swapKills = 0;
     private DSGame currentGame = null;
+    private Inventory lastOpened = null;
 
     public String getLastSwappedTo() {
         return deathBlame;
@@ -49,9 +52,18 @@ public class DSMetadata {
         currentGame = null;
         deathBlame = null;
         swapKills = 0;
+        lastOpened = null;
     }
 
     public String getDeathBlame() {
         return deathBlame;
+    }
+
+    public Inventory getLastOpened() {
+        return lastOpened;
+    }
+
+    public void setLastOpened(Inventory lastOpened) {
+        this.lastOpened = lastOpened;
     }
 }
