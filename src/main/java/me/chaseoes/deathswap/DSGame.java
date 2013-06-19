@@ -4,6 +4,7 @@ import me.chaseoes.deathswap.lobbysigns.LobbySign;
 import me.chaseoes.deathswap.metadata.DSMetadata;
 import me.chaseoes.deathswap.metadata.MetadataHelper;
 
+import me.chaseoes.deathswap.utilities.PlayerStateStorage;
 import me.chaseoes.deathswap.utilities.SwapState;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,6 +28,7 @@ public class DSGame {
 	private String name;
 	private ArrayList<String> players = new ArrayList<String>();
 	private LinkedHashMap<Location, BlockState> changedBlocks = new LinkedHashMap<Location, BlockState>();
+	private HashMap<String, PlayerStateStorage> playerStates = new HashMap<String, PlayerStateStorage>();
 	private Random rand = new Random();
 	private GameState state = GameState.WAITING;
 	private Location lowerBound;
@@ -104,7 +107,6 @@ public class DSGame {
 		if (state == GameState.INGAME) {
 			player.sendMessage(DeathSwap.getInstance().format("That game is currently in progress."));
 		} else if (DeathSwap.getInstance().getMap(name).getType() == GameType.PRIVATE) {
-			clearInventory(player);
 			//TODO: Approval of join goes here
 			players.add(player.getName());
 			MetadataHelper.getDSMetadata(player).setCurrentGame(this);
@@ -114,8 +116,6 @@ public class DSGame {
 				startGame();
 			}
 		} else if (players.size() < DeathSwap.getInstance().getMap(name).getMaxPlayers()) {
-			clearInventory(player);
-			removeFly(player);
 			players.add(player.getName());
 			DSMetadata meta = MetadataHelper.getDSMetadata(player);
 			meta.setCurrentGame(this);
@@ -127,19 +127,9 @@ public class DSGame {
 		}
 		sign.update();
 	}
-	
-	public void clearInventory(Player player) {
-		DeathSwap.getInstance().getServer().dispatchCommand(DeathSwap.getInstance().getServer().getConsoleSender(), "clear " + player.getName());
-	}
-	public void removeFly(Player player){
-		player.setFlying(false);
-		player.setAllowFlight(false);
-		player.setGameMode(GameMode.SURVIVAL);
-	}
 
 	public void leaveGame(Player player) {
 		players.remove(player.getName());
-		clearInventory(player);
 		player.getInventory().addItem(new ItemStack(Material.WATCH, 1));
 		broadcast(DeathSwap.getInstance().format(player.getName() + " has left the game."));
 		if (state == GameState.INGAME) {
@@ -166,6 +156,7 @@ public class DSGame {
 			MetadataHelper.getDSMetadata(player).reset();
 			player.teleport(DeathSwap.getInstance().getLobbyLocation());
 			showOtherPlayers(player);
+			playerStates.get(p).restore();
 		}
 		players.clear();
 		state = GameState.WAITING;
@@ -178,6 +169,12 @@ public class DSGame {
 		startSwapTimer();
 		teleportToRandomSpawns();
 		state = GameState.INGAME;
+		for (String p : getPlayersIngame()) {
+			Player player = DeathSwap.getInstance().getServer().getPlayerExact(p);
+			PlayerStateStorage state = new PlayerStateStorage(player);
+			playerStates.put(p, state);
+			state.clear();
+		}
 	}
 
 	public void startSwapTimer() {

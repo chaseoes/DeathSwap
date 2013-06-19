@@ -9,14 +9,17 @@ import me.chaseoes.deathswap.utilities.DuelInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.sk89q.worldedit.EmptyClipboardException;
 
+import me.chaseoes.deathswap.utilities.IconMenu;
 import me.chaseoes.deathswap.utilities.SerializableLocation;
 import me.chaseoes.deathswap.utilities.WorldEditUtilities;
 
@@ -27,6 +30,8 @@ public class DeathSwap extends JavaPlugin {
 	public HashMap<String, DSGame> games = new HashMap<String, DSGame>();
 	public HashMap<String, DuelInfo> needsToAccept = new HashMap<String, DuelInfo>();
 	public HashSet<String> disabled = new HashSet<String>();
+	public HashSet<String> noRequests = new HashSet<String>();
+	public HashMap<String, IconMenu> duelMenus = new HashMap<String, IconMenu>();
 
 	public static DeathSwap getInstance() {
 		return instance;
@@ -61,10 +66,48 @@ public class DeathSwap extends JavaPlugin {
 		getServer().getScheduler().runTaskLater(this, new Runnable() {
 			@Override
 			public void run() {
+				getServer().broadcastMessage(format("-------------------"));
 				getServer().broadcastMessage(format("Server reloaded."));
 				getServer().broadcastMessage(format("Changes to the DeathSwap plugin have been made!"));
+				getServer().broadcastMessage(format("-------------------"));
 			}
 		}, 40L);
+	}
+
+	public void refreshMenu(final Player player, final Player requested) {
+		duelMenus.remove(player.getName());
+		duelMenus.put(player.getName(), new IconMenu(ChatColor.translateAlternateColorCodes('&', "Pick a map!"), roundUp(getConfig().getConfigurationSection("maps").getKeys(false).size()), new IconMenu.OptionClickEventHandler() {
+			@Override
+			public void onOptionClick(IconMenu.OptionClickEvent event) {
+				player.sendMessage(format("You have requested to duel " + requested.getName() + "."));
+				player.sendMessage(format(player.getName() + "has requested to duel you in a DeathSwap game!"));
+				player.sendMessage(format("Type &b/ds accept &7to accept their request."));
+				needsToAccept.put(requested.getName(), new DuelInfo(player.getName(), ChatColor.stripColor(event.getName())));
+				event.getPlayer().performCommand("ping");
+				event.getPlayer().chat(event.getName());
+				event.setWillClose(true);
+			}
+		}, this));
+
+		int i = 1;
+		for (String s : getConfig().getConfigurationSection("maps").getKeys(false)) {
+			if (games.containsKey(s)) {
+				if (getConfig().getString("maps." + s + ".icon") != null) {
+					ItemStack icon = new ItemStack(Material.getMaterial(getConfig().getString("maps." + s + ".icon")), 1);
+					DSGame game = games.get(s);
+					String option = ChatColor.RESET + "" + ChatColor.GREEN + games.get(s).getPlayersIngame().size() + " Players";
+					if (game.getState() != GameState.WAITING) {
+						option = ChatColor.RESET + "" + ChatColor.RED + "In-Game";
+					}
+					duelMenus.get(player.getName()).setOption(i - 1, icon, (ChatColor.RESET + "" + ChatColor.AQUA + s), option);
+					i++;
+				}
+			}
+		}
+	}
+
+	int roundUp(int n) {
+		return (n + 8) / 9 * 9;
 	}
 
 	public void onDisable() {
@@ -120,7 +163,7 @@ public class DeathSwap extends JavaPlugin {
 								return true;
 							}
 						}
-						
+
 						if (strings.length == 1) {
 							if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
 								game = MetadataHelper.getDSMetadata((Player) cs).getCurrentGame();
@@ -129,12 +172,12 @@ public class DeathSwap extends JavaPlugin {
 								return true;
 							}
 						}
-						
+
 						StringBuilder sb = new StringBuilder();
 						for (String player : game.getPlayersIngame()) {
 							sb.append(player + ", ");
 						}
-						
+
 						cs.sendMessage(format(sb.toString().substring(0, sb.toString().length() - 2)));
 					} else {
 						cs.sendMessage(format("Incorrect command syntax."));
@@ -163,13 +206,24 @@ public class DeathSwap extends JavaPlugin {
 							cs.sendMessage(format("That map is currently ingame!"));
 						} else if (MetadataHelper.getDSMetadata(player).isIngame()) {
 							cs.sendMessage(format(p + " is already in a game!"));
+						} else if (noRequests.contains(player.getName())) {
+							cs.sendMessage(format("This player currently isn't accepting requests to duel."));
 						} else {
 							cs.sendMessage(format("You have requested to duel " + player.getName() + "."));
 							player.sendMessage(format(cs.getName() + "has requested to duel you in a DeathSwap game!"));
 							player.sendMessage(format("Type &b/ds accept &7to accept their request."));
 							needsToAccept.put(player.getName(), new DuelInfo(cs.getName(), map));
 						}
-					} else {
+					} else if (strings.length == 2 && strings[1].equalsIgnoreCase("toggle")) {
+						if (!noRequests.contains(cs.getName())) {
+							noRequests.add(cs.getName());
+							cs.sendMessage(format("Players are no longer allowed to send you requests to duel."));
+						} else {
+							noRequests.remove(cs.getName());
+							cs.sendMessage(format("Players are now allowed to send you requests to duel."));
+						}
+					}
+					else {
 						cs.sendMessage(format("Incorrect command syntax."));
 						cs.sendMessage(format("Type &b/ds help &7for help."));
 					}
@@ -177,7 +231,7 @@ public class DeathSwap extends JavaPlugin {
 					cs.sendMessage(format("You don't have permission."));
 				}
 			}
-			
+
 
 			if (strings[0].equalsIgnoreCase("accept")) {
 				if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
@@ -230,7 +284,7 @@ public class DeathSwap extends JavaPlugin {
 					cs.sendMessage(format("You don't have permission."));
 				}
 			}
-			
+
 			if (strings[0].equalsIgnoreCase("enable")) {
 				if (cs.hasPermission("deathswap.create")) {
 					if (strings.length == 2) {
@@ -249,7 +303,7 @@ public class DeathSwap extends JavaPlugin {
 					cs.sendMessage(format("You don't have permission."));
 				}
 			}
-			
+
 			if (strings[0].equalsIgnoreCase("disable")) {
 				if (cs.hasPermission("deathswap.create")) {
 					if (strings.length == 2) {
@@ -284,6 +338,17 @@ public class DeathSwap extends JavaPlugin {
 								cs.sendMessage(format("Successfully created " + mapName + "!"));
 							} catch (EmptyClipboardException e) {
 								cs.sendMessage(format("You must select the map with WorldEdit first."));
+							}
+						}
+
+						if (strings[1].equalsIgnoreCase("icon")) {
+							String mapName = strings[2];
+							String mapIcon = strings[3];
+							if (games.containsKey(mapName)) {
+								getConfig().set("maps." + mapName + ".icon", mapIcon.toUpperCase());
+								saveConfig();
+							} else {
+								cs.sendMessage(format("That map does not exist."));
 							}
 						}
 					} else {

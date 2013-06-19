@@ -5,8 +5,11 @@ import me.chaseoes.deathswap.metadata.MetadataHelper;
 
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class PlayerInteractListener implements Listener {
@@ -30,5 +33,16 @@ public class PlayerInteractListener implements Listener {
 			} 
 		}
 	}
+	
+	@EventHandler
+    public void touchytouchy(PlayerInteractEntityEvent event){
+        Entity rightclick = event.getRightClicked();
+        if(rightclick instanceof Player){
+        	Player clicked = (Player) event.getRightClicked();
+            DeathSwap.getInstance().refreshMenu(event.getPlayer(), clicked);
+            DeathSwap.getInstance().duelMenus.get(event.getPlayer().getName()).open(event.getPlayer());
+        }
+    }
+    
 
 }
