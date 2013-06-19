@@ -420,4 +420,11 @@ public class DeathSwap extends JavaPlugin {
 		}
 		return Bukkit.getWorlds().get(0).getSpawnLocation();
 	}
+
+    public DSGame getGame(String name) {
+        if (games.containsKey(name)) {
+            return games.get(name);
+        }
+        return null;
+    }
 }

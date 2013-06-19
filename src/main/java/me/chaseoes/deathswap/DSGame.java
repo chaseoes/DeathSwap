@@ -49,16 +49,23 @@ public class DSGame {
 		return players;
 	}
 
-	public void rollbackBlocks() {
-		for (BlockState state : changedBlocks.values()) {
-			state.update(true);
-		}
-
-		changedBlocks.clear();
-	}
+    public void rollbackBlocks() {
+        switch (DeathSwap.getInstance().getMap(name).getRollback()) {
+            case BLOCKSTATE:
+                for (BlockState state : changedBlocks.values()) {
+                    state.update(true);
+                }
+                changedBlocks.clear();
+                state = GameState.WAITING;
+                break;
+            case WORLD:
+                MapUtilities.getUtilities().reloadWorld(DeathSwap.getInstance().getMap(name));
+                break;
+        }
+    }
 
 	public void addBlock(BlockState state) {
-		if (!changedBlocks.containsKey(state.getLocation())) {
+        if (DeathSwap.getInstance().getMap(name).getRollback() == RollbackType.BLOCKSTATE && !changedBlocks.containsKey(state.getLocation())) {
 			changedBlocks.put(state.getLocation(), state);
 		}
 	}
@@ -159,7 +166,7 @@ public class DSGame {
 			playerStates.get(p).restore();
 		}
 		players.clear();
-		state = GameState.WAITING;
+		state = GameState.ROLLBACK;
 		rollbackBlocks();
 		sign.update();
 	}
@@ -291,6 +298,10 @@ public class DSGame {
 
     public String getName() {
         return name;
+    }
+
+    public void setState(GameState state) {
+        this.state = state;
     }
 
     class PartCoords {

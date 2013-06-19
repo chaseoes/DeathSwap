@@ -11,6 +11,7 @@ public class Map {
 	Location p1;
 	Location p2;
 	int maxPlayers;
+    RollbackType rollback;
 
 	public Map(String n) {
 		name = n;
@@ -39,6 +40,7 @@ public class Map {
 			maxPlayers = DeathSwap.getInstance().getConfig().getInt(getPath() + "max-players");
 			p1 = SerializableLocation.getUtilities().stringToLocation(DeathSwap.getInstance().getConfig().getString(getPath() + "region.p1"));
 			p2 = SerializableLocation.getUtilities().stringToLocation(DeathSwap.getInstance().getConfig().getString(getPath() + "region.p2"));
+            rollback = RollbackType.valueOf(DeathSwap.getInstance().getConfig().getString(getPath() + "rollback"));
 		}
 	}
 
@@ -76,4 +78,12 @@ public class Map {
 		return "maps." + getName() + ".";
 	}
 
+    public RollbackType getRollback() {
+        return rollback;
+    }
+
+    public void setRollback(RollbackType rollback) {
+        this.rollback = rollback;
+        DeathSwap.getInstance().getConfig().set(getPath() + "rollback", rollback);
+    }
 }

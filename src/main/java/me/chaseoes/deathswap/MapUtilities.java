@@ -2,11 +2,20 @@ package me.chaseoes.deathswap;
 
 import me.chaseoes.deathswap.utilities.WorldEditUtilities;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.EmptyClipboardException;
 import com.sk89q.worldedit.bukkit.selections.Selection;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class MapUtilities {
 	
@@ -36,4 +45,53 @@ public class MapUtilities {
         }
     }
 
+    public void reloadWorld(final Map map) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv remove " + map.getName());
+        final File world = new File(Bukkit.getWorldContainer(), map.getName());
+        final File zip = new File(DeathSwap.getInstance().getDataFolder(), map.getName() + ".zip");
+        Bukkit.getScheduler().runTaskAsynchronously(DeathSwap.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                rmRecursive(world);
+                world.mkdir();
+                try {
+                    ZipFile file = new ZipFile(zip);
+                    Enumeration<? extends ZipEntry> entries = file.entries();
+                    while (entries.hasMoreElements()) {
+                        ZipEntry entry = entries.nextElement();
+                        File worldEntry = new File(world, entry.getName());
+                        worldEntry.getParentFile().mkdirs();
+                        worldEntry.createNewFile();
+                        InputStream stream = file.getInputStream(entry);
+                        FileOutputStream fos = new FileOutputStream(worldEntry);
+                        int data;
+                        while ((data = stream.read()) != -1) {
+                            fos.write(data);
+                        }
+                        fos.flush();
+                        fos.close();
+                        stream.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Bukkit.getScheduler().runTask(DeathSwap.getInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv import " + map.getName());
+                        DeathSwap.getInstance().getGame(map.getName()).setState(GameState.WAITING);
+                    }
+                });
+            }
+        });
+    }
+
+    private void rmRecursive(File file) {
+        if (file.isDirectory() && file.listFiles().length != 0) {
+            for (File f : file.listFiles()) {
+                rmRecursive(f);
+            }
+        }
+        file.delete();
+    }
 }

@@ -4,6 +4,7 @@ public enum GameState {
 
     WAITING,
     INGAME,
-    LOBBY;
+    LOBBY,
+    ROLLBACK;
     
 }
