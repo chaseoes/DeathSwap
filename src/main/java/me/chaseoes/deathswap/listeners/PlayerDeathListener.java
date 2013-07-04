@@ -23,7 +23,6 @@ public class PlayerDeathListener implements Listener {
                 g.broadcast(DeathSwap.getInstance().format(meta.getDeathBlame() + " killed " + event.getEntity().getName() + "!"));
                 Player player = Bukkit.getPlayerExact(meta.getDeathBlame());
                 if (player != null) {
-                    player.sendMessage(DeathSwap.getInstance().format(meta.getDeathBlame() + " killed " + event.getEntity().getName()));
                     if(MetadataHelper.getDSMetadata(player).isIngame() && MetadataHelper.getDSMetadata(player).getCurrentGame().getName().equals(g.getName())) {
                         MetadataHelper.getDSMetadata(player).incSwapKills();
                     }

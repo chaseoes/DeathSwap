@@ -36,9 +36,10 @@ public class PlayerInteractListener implements Listener {
 	
 	@EventHandler
     public void touchyTouchy(PlayerInteractEntityEvent event) {
-        if (event.getRightClicked() instanceof Player){
+        if (event.getRightClicked() instanceof Player && !MetadataHelper.getDSMetadata(event.getPlayer()).isDuelMenuOpen()){
             DuelMenu menu = new DuelMenu(event.getPlayer(), (Player) event.getRightClicked());
             menu.open();
+            MetadataHelper.getDSMetadata(event.getPlayer()).setDuelMenuOpen(true);
         }
     }
     

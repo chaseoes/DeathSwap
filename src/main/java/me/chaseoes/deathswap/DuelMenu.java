@@ -2,6 +2,7 @@ package me.chaseoes.deathswap;
 
 import java.util.Set;
 
+import me.chaseoes.deathswap.metadata.MetadataHelper;
 import me.chaseoes.deathswap.utilities.IconMenu;
 
 import org.bukkit.ChatColor;
@@ -22,6 +23,7 @@ public class DuelMenu {
 				event.getPlayer().performCommand("ds duel " + event.getName() + " " + playerToDuel.getName());
 				event.setWillClose(true);
 				event.setWillDestroy(true);
+                MetadataHelper.getDSMetadata(event.getPlayer()).setDuelMenuOpen(false);
 			}
 		});
 

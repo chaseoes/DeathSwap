@@ -10,6 +10,7 @@ public class DSMetadata {
     private int swapKills = 0;
     private DSGame currentGame = null;
     private Inventory lastOpened = null;
+    private boolean duelMenuOpen = false;
 
     public String getLastSwappedTo() {
         return deathBlame;
@@ -64,5 +65,13 @@ public class DSMetadata {
 
     public void setLastOpened(Inventory lastOpened) {
         this.lastOpened = lastOpened;
+    }
+
+    public boolean isDuelMenuOpen() {
+        return duelMenuOpen;
+    }
+
+    public void setDuelMenuOpen(boolean duelMenuOpen) {
+        this.duelMenuOpen = duelMenuOpen;
     }
 }
