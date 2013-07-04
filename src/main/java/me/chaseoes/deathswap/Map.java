@@ -40,7 +40,12 @@ public class Map {
 			maxPlayers = DeathSwap.getInstance().getConfig().getInt(getPath() + "max-players");
 			p1 = SerializableLocation.getUtilities().stringToLocation(DeathSwap.getInstance().getConfig().getString(getPath() + "region.p1"));
 			p2 = SerializableLocation.getUtilities().stringToLocation(DeathSwap.getInstance().getConfig().getString(getPath() + "region.p2"));
-            rollback = RollbackType.valueOf(DeathSwap.getInstance().getConfig().getString(getPath() + "rollback"));
+            String rb = DeathSwap.getInstance().getConfig().getString(getPath() + "rollback");
+            if (rb != null) {
+                rollback = RollbackType.valueOf(rb);
+            } else {
+                rollback = RollbackType.BLOCKSTATE;
+            }
 		}
 	}
 
