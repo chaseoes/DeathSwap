@@ -13,6 +13,7 @@ import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import sun.security.provider.PolicyParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,13 +36,15 @@ public class DSGame {
 	private World world;
 	private int swapId = -1;
 	private LobbySign sign;
+    private GameQueue queue;
 
-	public DSGame(String name, Location loc1, Location loc2) {
+    public DSGame(String name, Location loc1, Location loc2) {
 		this.name = name;
 		lowerBound = new Location(loc1.getWorld(), Math.min(loc1.getBlockX(), loc2.getBlockX()), 0, Math.min(loc1.getBlockZ(), loc2.getBlockZ()));
 		upperBound = new Location(loc1.getWorld(), Math.max(loc1.getBlockX(), loc2.getBlockX()), loc1.getWorld().getMaxHeight(), Math.max(loc1.getBlockZ(), loc2.getBlockZ()));
 		world = loc1.getWorld();
 		sign = new LobbySign(DeathSwap.getInstance().getMap(name));
+        queue = new GameQueue(this);
 	}
 
 	public ArrayList<String> getPlayersIngame() {
@@ -50,16 +53,19 @@ public class DSGame {
 
     public void rollbackBlocks() {
         switch (DeathSwap.getInstance().getMap(name).getRollback()) {
+            case WORLD:
+                MapUtilities.getUtilities().reloadWorld(DeathSwap.getInstance().getMap(name));
+                break;
             case BLOCKSTATE:
+            default:
                 for (BlockState state : changedBlocks.values()) {
                     state.update(true);
                 }
                 changedBlocks.clear();
                 state = GameState.WAITING;
+                queue.check();
                 break;
-            case WORLD:
-                MapUtilities.getUtilities().reloadWorld(DeathSwap.getInstance().getMap(name));
-                break;
+
         }
     }
 
@@ -122,7 +128,7 @@ public class DSGame {
                 if (players.size() == 2) {
                     startGame();
                 }
-            } else if (players.size() < DeathSwap.getInstance().getMap(name).getMaxPlayers()) {
+            } else if (queue.gameHasRoom()) {
                 players.add(player.getName());
                 DSMetadata meta = MetadataHelper.getDSMetadata(player);
                 meta.setCurrentGame(this);
@@ -131,6 +137,10 @@ public class DSGame {
                 if (players.size() >= (DeathSwap.getInstance().getMap(name).getMaxPlayers())) {
                     startGame();
                 }
+            } else {
+                queue.add(player);
+                player.sendMessage("You are number " + (queue.getPosition(player) + 1) + " in the queue");
+                return;
             }
         } else if (state == GameState.ROLLBACK) {
             player.sendMessage(DeathSwap.getInstance().format("That game is currently rolling back."));
@@ -151,6 +161,7 @@ public class DSGame {
 		player.teleport(DeathSwap.getInstance().getLobbyLocation());
 		sign.update();
 		showOtherPlayers(player);
+        queue.check();
 	}
 
 	public void winGame(Player player) {
@@ -305,6 +316,10 @@ public class DSGame {
 
     public void setState(GameState state) {
         this.state = state;
+    }
+
+    public GameQueue getQueue() {
+        return queue;
     }
 
     class PartCoords {
