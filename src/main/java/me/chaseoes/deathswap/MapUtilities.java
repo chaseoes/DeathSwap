@@ -80,6 +80,7 @@ public class MapUtilities {
                     public void run() {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv import " + map.getName());
                         DeathSwap.getInstance().getGame(map.getName()).setState(GameState.WAITING);
+                        DeathSwap.getInstance().getGame(map.getName()).getQueue().check();
                     }
                 });
             }

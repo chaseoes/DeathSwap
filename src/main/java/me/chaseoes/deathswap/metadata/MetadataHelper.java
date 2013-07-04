@@ -24,4 +24,8 @@ public class MetadataHelper {
     public static void createDSMetadata(Player player) {
         player.setMetadata(METADATA_NAME, new FixedMetadataValue(DeathSwap.getInstance(), new DSMetadata()));
     }
+
+    public static void deleteDSMetadata(Player player) {
+        player.removeMetadata(METADATA_NAME, DeathSwap.getInstance());
+    }
 }

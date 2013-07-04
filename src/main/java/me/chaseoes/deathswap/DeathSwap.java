@@ -1,5 +1,6 @@
 package me.chaseoes.deathswap;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -117,6 +118,9 @@ public class DeathSwap extends JavaPlugin {
 			game.stopGame();
 		}
 		maps.clear();
+        for (Player player : getServer().getOnlinePlayers()) {
+            MetadataHelper.deleteDSMetadata(player);
+        }
 		instance = null;
 	}
 
@@ -426,5 +430,9 @@ public class DeathSwap extends JavaPlugin {
             return games.get(name);
         }
         return null;
+    }
+
+    public Collection<DSGame> getGames() {
+        return games.values();
     }
 }
