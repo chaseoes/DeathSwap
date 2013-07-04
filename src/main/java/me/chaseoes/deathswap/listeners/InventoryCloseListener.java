@@ -14,6 +14,8 @@ public class InventoryCloseListener implements Listener {
         DSMetadata meta = MetadataHelper.getDSMetadata((Player) event.getPlayer());
         if (meta.isIngame()) {
             meta.setLastOpened(null);
+        } else {
+            meta.setDuelMenuOpen(false);
         }
     }
 }
