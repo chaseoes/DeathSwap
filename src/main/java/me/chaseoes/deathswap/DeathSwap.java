@@ -180,7 +180,7 @@ public class DeathSwap extends JavaPlugin {
 							cs.sendMessage(format("This player currently isn't accepting requests to duel."));
 						} else {
 							cs.sendMessage(format("You have requested to duel " + player.getName() + "."));
-							player.sendMessage(format(cs.getName() + "has requested to duel you in a DeathSwap game!"));
+							player.sendMessage(format(cs.getName() + " has requested to duel you in a DeathSwap game!"));
 							player.sendMessage(format("Type &b/ds accept &7to accept their request."));
 							needsToAccept.put(player.getName(), new DuelInfo(cs.getName(), map));
 						}
