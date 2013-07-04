@@ -9,17 +9,14 @@ import me.chaseoes.deathswap.utilities.DuelInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.sk89q.worldedit.EmptyClipboardException;
 
-import me.chaseoes.deathswap.utilities.IconMenu;
 import me.chaseoes.deathswap.utilities.SerializableLocation;
 import me.chaseoes.deathswap.utilities.WorldEditUtilities;
 
@@ -31,7 +28,6 @@ public class DeathSwap extends JavaPlugin {
 	public HashMap<String, DuelInfo> needsToAccept = new HashMap<String, DuelInfo>();
 	public HashSet<String> disabled = new HashSet<String>();
 	public HashSet<String> noRequests = new HashSet<String>();
-	public HashMap<String, IconMenu> duelMenus = new HashMap<String, IconMenu>();
 
 	public static DeathSwap getInstance() {
 		return instance;
@@ -74,38 +70,6 @@ public class DeathSwap extends JavaPlugin {
 				getServer().broadcastMessage(format("-------------------"));
 			}
 		}, 40L);
-	}
-
-	public void refreshMenu(final Player player, final Player requested) {
-		duelMenus.remove(player.getName());
-		duelMenus.put(player.getName(), new IconMenu(ChatColor.translateAlternateColorCodes('&', "Pick a map!"), roundUp(getConfig().getConfigurationSection("maps").getKeys(false).size()), new IconMenu.OptionClickEventHandler() {
-			@Override
-			public void onOptionClick(IconMenu.OptionClickEvent event) {
-				player.sendMessage(format("You have requested to duel " + requested.getName() + "."));
-				player.sendMessage(format(player.getName() + "has requested to duel you in a DeathSwap game!"));
-				player.sendMessage(format("Type &b/ds accept &7to accept their request."));
-				needsToAccept.put(requested.getName(), new DuelInfo(player.getName(), ChatColor.stripColor(event.getName())));
-				event.getPlayer().performCommand("ping");
-				event.getPlayer().chat(event.getName());
-				event.setWillClose(true);
-			}
-		}, this));
-
-		int i = 1;
-		for (String s : getConfig().getConfigurationSection("maps").getKeys(false)) {
-			if (games.containsKey(s)) {
-				if (getConfig().getString("maps." + s + ".icon") != null) {
-					ItemStack icon = new ItemStack(Material.getMaterial(getConfig().getString("maps." + s + ".icon")), 1);
-					DSGame game = games.get(s);
-					String option = ChatColor.RESET + "" + ChatColor.GREEN + games.get(s).getPlayersIngame().size() + " Players";
-					if (game.getState() != GameState.WAITING) {
-						option = ChatColor.RESET + "" + ChatColor.RED + "In-Game";
-					}
-					duelMenus.get(player.getName()).setOption(i - 1, icon, (ChatColor.RESET + "" + ChatColor.AQUA + s), option);
-					i++;
-				}
-			}
-		}
 	}
 
 	int roundUp(int n) {

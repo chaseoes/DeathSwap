@@ -7,7 +7,6 @@ import me.chaseoes.deathswap.metadata.MetadataHelper;
 import me.chaseoes.deathswap.utilities.PlayerStateStorage;
 import me.chaseoes.deathswap.utilities.SwapState;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;

@@ -2,7 +2,6 @@ package me.chaseoes.deathswap;
 
 import me.chaseoes.deathswap.utilities.SerializableLocation;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 public class Map {
