@@ -20,10 +20,12 @@ public class DuelMenu {
 		Set<String> maps = DeathSwap.getInstance().getConfig().getConfigurationSection("maps").getKeys(false);
 		menu = new IconMenu("Pick a map to duel on!", roundUp(maps.size()), new IconMenu.OptionClickEventHandler() {
 			public void onOptionClick(IconMenu.OptionClickEvent event) {
-				event.getPlayer().performCommand("ds duel " + ChatColor.stripColor(event.getName()) + " " + playerToDuel.getName());
-				event.setWillClose(true);
-				event.setWillDestroy(true);
-                MetadataHelper.getDSMetadata(event.getPlayer()).setDuelMenuOpen(false);
+                event.setWillClose(true);
+                event.setWillDestroy(true);
+                if (MetadataHelper.getDSMetadata(event.getPlayer()).isDuelMenuOpen()) {
+				    event.getPlayer().performCommand("ds duel " + ChatColor.stripColor(event.getName()) + " " + playerToDuel.getName());
+                    MetadataHelper.getDSMetadata(event.getPlayer()).setDuelMenuOpen(false);
+                }
 			}
 		});
 
