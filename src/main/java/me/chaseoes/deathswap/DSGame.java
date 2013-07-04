@@ -53,7 +53,11 @@ public class DSGame {
 
     public void rollbackBlocks() {
         switch (DeathSwap.getInstance().getMap(name).getRollback()) {
+            case WORLD:
+                MapUtilities.getUtilities().reloadWorld(DeathSwap.getInstance().getMap(name));
+                break;
             case BLOCKSTATE:
+            default:
                 for (BlockState state : changedBlocks.values()) {
                     state.update(true);
                 }
@@ -61,9 +65,7 @@ public class DSGame {
                 state = GameState.WAITING;
                 queue.check();
                 break;
-            case WORLD:
-                MapUtilities.getUtilities().reloadWorld(DeathSwap.getInstance().getMap(name));
-                break;
+
         }
     }
 
