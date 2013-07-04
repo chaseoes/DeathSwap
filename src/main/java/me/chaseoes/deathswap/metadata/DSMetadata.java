@@ -1,7 +1,6 @@
 package me.chaseoes.deathswap.metadata;
 
 import me.chaseoes.deathswap.DSGame;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 

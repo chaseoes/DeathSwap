@@ -2,6 +2,8 @@ package me.chaseoes.deathswap.utilities;
 
 import java.util.Arrays;
 
+import me.chaseoes.deathswap.DeathSwap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,11 +26,11 @@ public class IconMenu implements Listener {
     private String[] optionNames;
     private ItemStack[] optionIcons;
    
-    public IconMenu(String name, int size, OptionClickEventHandler handler, Plugin plugin) {
+    public IconMenu(String name, int size, OptionClickEventHandler handler) {
         this.name = name;
         this.size = size;
         this.handler = handler;
-        this.plugin = plugin;
+        this.plugin = DeathSwap.getInstance();
         this.optionNames = new String[size];
         this.optionIcons = new ItemStack[size];
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
