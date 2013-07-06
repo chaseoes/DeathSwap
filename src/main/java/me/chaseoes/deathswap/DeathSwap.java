@@ -97,7 +97,10 @@ public class DeathSwap extends JavaPlugin {
 			}
 
 			if (strings[0].equalsIgnoreCase("join")) {
-				if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
+                if (MetadataHelper.getDSMetadata((Player) cs).getCurrentQueue() != null) {
+                    GameQueue queue = games.get(MetadataHelper.getDSMetadata((Player) cs).getCurrentQueue()).getQueue();
+                    cs.sendMessage(format("You are number " + queue.getPosition((Player) cs) + "in line!"));
+                } else if (MetadataHelper.getDSMetadata((Player) cs).isIngame()) {
 					cs.sendMessage(format("You are already in a game!"));
 				} else if (cs.hasPermission("deathswap.play")) {
 					if (strings.length == 2) {

@@ -129,6 +129,7 @@ public class DSGame {
                     startGame();
                 }
             } else if (queue.gameHasRoom()) {
+                queue.remove(player);
                 players.add(player.getName());
                 DSMetadata meta = MetadataHelper.getDSMetadata(player);
                 meta.setCurrentGame(this);

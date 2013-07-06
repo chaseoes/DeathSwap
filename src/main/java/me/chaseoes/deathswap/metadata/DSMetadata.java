@@ -11,6 +11,7 @@ public class DSMetadata {
     private DSGame currentGame = null;
     private Inventory lastOpened = null;
     private boolean duelMenuOpen = false;
+    private String currentQueue = null;
 
     public String getLastSwappedTo() {
         return deathBlame;
@@ -73,5 +74,13 @@ public class DSMetadata {
 
     public void setDuelMenuOpen(boolean duelMenuOpen) {
         this.duelMenuOpen = duelMenuOpen;
+    }
+
+    public String getCurrentQueue() {
+        return currentQueue;
+    }
+
+    public void setCurrentQueue(String currentQueue) {
+        this.currentQueue = currentQueue;
     }
 }

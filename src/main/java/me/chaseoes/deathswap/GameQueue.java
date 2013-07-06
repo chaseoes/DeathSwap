@@ -1,5 +1,6 @@
 package me.chaseoes.deathswap;
 
+import me.chaseoes.deathswap.metadata.MetadataHelper;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -39,11 +40,13 @@ public class GameQueue {
         }
 
         queue.add(player.getName());
+        MetadataHelper.getDSMetadata(player).setCurrentQueue(game.getName());
         return true;
     }
 
     public boolean remove(Player player) {
         queue.remove(player.getName());
+        MetadataHelper.getDSMetadata(player).setCurrentQueue(null);
         return true;
     }
 
