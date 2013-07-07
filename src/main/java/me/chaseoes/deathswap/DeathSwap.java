@@ -27,6 +27,8 @@ public class DeathSwap extends JavaPlugin {
 	public HashMap<String, DuelInfo> needsToAccept = new HashMap<String, DuelInfo>();
 	public HashSet<String> disabled = new HashSet<String>();
 	public HashSet<String> noRequests = new HashSet<String>();
+    public HashMap<String, Long> duelReqTimes = new HashMap<String, Long>();
+    private final int MS_IN_A_SEC = 1000;
 
 	public static DeathSwap getInstance() {
 		return instance;
@@ -177,6 +179,14 @@ public class DeathSwap extends JavaPlugin {
 					cs.sendMessage(format("You are already in a game!"));
 				} else if (cs.hasPermission("deathswap.play")) {
 					if (strings.length == 3) {
+                        if (duelReqTimes.containsKey(cs.getName())) {
+                            Long time = duelReqTimes.get(cs.getName());
+                            if (System.currentTimeMillis() - time < getConfig().getInt("duel-cooldown", 10) * MS_IN_A_SEC) {
+                                cs.sendMessage(format("Please wait " + (getConfig().getInt("duel-cooldown", 10) * MS_IN_A_SEC - (System.currentTimeMillis() - time)) + " seconds before your next request!"));
+                                return true;
+                            }
+                            duelReqTimes.remove(cs.getName());
+                        }
 						String map = strings[1];
 						String p = strings[2];
 						Player player = getServer().getPlayer(p);
@@ -193,6 +203,7 @@ public class DeathSwap extends JavaPlugin {
 						} else if (noRequests.contains(player.getName())) {
 							cs.sendMessage(format("This player currently isn't accepting requests to duel."));
 						} else {
+                            duelReqTimes.put(cs.getName(), System.currentTimeMillis());
 							cs.sendMessage(format("You have requested to duel " + player.getName() + "."));
 							player.sendMessage(format(cs.getName() + " has requested to duel you in a DeathSwap game!"));
 							player.sendMessage(format("Type &b/ds accept &7to accept their request."));

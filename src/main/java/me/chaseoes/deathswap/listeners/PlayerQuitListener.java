@@ -1,5 +1,6 @@
 package me.chaseoes.deathswap.listeners;
 
+import me.chaseoes.deathswap.DeathSwap;
 import me.chaseoes.deathswap.metadata.DSMetadata;
 import me.chaseoes.deathswap.metadata.MetadataHelper;
 import org.bukkit.event.EventHandler;
@@ -14,5 +15,6 @@ public class PlayerQuitListener implements Listener {
         if (meta != null && meta.isIngame()) {
             meta.getCurrentGame().leaveGame(event.getPlayer());
         }
+        DeathSwap.getInstance().duelReqTimes.remove(event.getPlayer().getName());
     }
 }
