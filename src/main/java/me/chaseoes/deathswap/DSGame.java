@@ -37,6 +37,7 @@ public class DSGame {
 	private int swapId = -1;
 	private LobbySign sign;
     private GameQueue queue;
+    private DSScoreboard board;
 
     public DSGame(String name, Location loc1, Location loc2) {
 		this.name = name;
@@ -45,6 +46,7 @@ public class DSGame {
 		world = loc1.getWorld();
 		sign = new LobbySign(DeathSwap.getInstance().getMap(name));
         queue = new GameQueue(this);
+        board = new DSScoreboard(this);
 	}
 
 	public ArrayList<String> getPlayersIngame() {
@@ -128,6 +130,7 @@ public class DSGame {
                 if (players.size() == 2) {
                     startGame();
                 }
+                board.addPlayer(player);
             } else if (queue.gameHasRoom()) {
                 queue.remove(player);
                 players.add(player.getName());
@@ -138,6 +141,7 @@ public class DSGame {
                 if (players.size() >= (DeathSwap.getInstance().getMap(name).getMaxPlayers())) {
                     startGame();
                 }
+                board.addPlayer(player);
             } else {
                 queue.add(player);
                 player.sendMessage("You are number " + (queue.getPosition(player) + 1) + " in the queue");
@@ -158,6 +162,7 @@ public class DSGame {
 				winGame(Bukkit.getPlayerExact(players.get(0)));
 			}
 		}
+        board.removePlayer(player);
 		MetadataHelper.getDSMetadata(player).reset();
 		player.teleport(DeathSwap.getInstance().getLobbyLocation());
 		sign.update();
@@ -180,6 +185,7 @@ public class DSGame {
 			showOtherPlayers(player);
 			playerStates.get(p).restore();
 		}
+        board.resetAll();
 		players.clear();
 		state = GameState.ROLLBACK;
 		rollbackBlocks();
