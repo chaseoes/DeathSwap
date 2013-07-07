@@ -171,6 +171,9 @@ public class DSGame {
 		player.teleport(DeathSwap.getInstance().getLobbyLocation());
 		sign.update();
 		showOtherPlayers(player);
+        for (String pl : players) {
+            hideOtherPlayers(Bukkit.getPlayerExact(pl));
+        }
         queue.check();
 	}
 
