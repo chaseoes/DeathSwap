@@ -169,6 +169,8 @@ public class DSGame {
         board.removePlayer(player);
 		MetadataHelper.getDSMetadata(player).reset();
 		player.teleport(DeathSwap.getInstance().getLobbyLocation());
+        playerStates.get(player.getName()).restore();
+        playerStates.remove(player.getName());
 		sign.update();
 		showOtherPlayers(player);
         for (String pl : players) {
@@ -194,6 +196,7 @@ public class DSGame {
 		}
         board.resetAll();
 		players.clear();
+        playerStates.clear();
 		state = GameState.ROLLBACK;
 		rollbackBlocks();
 		sign.update();
