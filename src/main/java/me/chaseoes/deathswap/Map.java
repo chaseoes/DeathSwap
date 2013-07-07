@@ -90,7 +90,10 @@ public class Map {
 	}
 
     public RollbackType getRollback() {
-        return rollback;
+        if (rollback != null) {
+            return rollback;
+        }
+        return RollbackType.BLOCKSTATE;
     }
 
     public void setRollback(RollbackType rollback) {
