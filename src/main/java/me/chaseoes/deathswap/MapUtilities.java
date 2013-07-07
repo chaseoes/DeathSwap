@@ -46,9 +46,12 @@ public class MapUtilities {
     }
 
     public void reloadWorld(final Map map) {
+        final File zip = new File(DeathSwap.getInstance().getDataFolder(), map.getName() + ".zip");
+        if (!zip.exists()) {
+
+        }
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv remove " + map.getName());
         final File world = new File(Bukkit.getWorldContainer(), map.getName());
-        final File zip = new File(DeathSwap.getInstance().getDataFolder(), map.getName() + ".zip");
         Bukkit.getScheduler().runTaskAsynchronously(DeathSwap.getInstance(), new Runnable() {
             @Override
             public void run() {

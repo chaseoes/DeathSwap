@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import sun.security.provider.PolicyParser;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -56,19 +57,22 @@ public class DSGame {
     public void rollbackBlocks() {
         switch (DeathSwap.getInstance().getMap(name).getRollback()) {
             case WORLD:
-                MapUtilities.getUtilities().reloadWorld(DeathSwap.getInstance().getMap(name));
-                break;
+                final File zip = new File(DeathSwap.getInstance().getDataFolder(), getName() + ".zip");
+                if (zip.exists()) {
+                    MapUtilities.getUtilities().reloadWorld(DeathSwap.getInstance().getMap(name));
+                    break;
+                }
             case BLOCKSTATE:
             default:
                 for (BlockState state : changedBlocks.values()) {
                     state.update(true);
                 }
-                changedBlocks.clear();
                 state = GameState.WAITING;
                 queue.check();
                 break;
 
         }
+        changedBlocks.clear();
     }
 
 	public void addBlock(BlockState state) {
@@ -76,23 +80,23 @@ public class DSGame {
 			changedBlocks.put(state.getLocation(), state);
 		}
 	}
-	
+
 	private void hideOtherPlayers(Player player) {
 		List<Player> playersToHide = new ArrayList<Player>();
 		for (Player p : DeathSwap.getInstance().getServer().getOnlinePlayers()) {
 			playersToHide.add(p);
 		}
-		
+
 		for (String p : getPlayersIngame()) {
 			Player pl = DeathSwap.getInstance().getServer().getPlayerExact(p);
 			playersToHide.remove(pl);
 		}
-		
+
 		for (Player p : playersToHide) {
 			player.hidePlayer(p);
 		}
 	}
-	
+
 	private void showOtherPlayers(Player player) {
 		for (Player p : DeathSwap.getInstance().getServer().getOnlinePlayers()) {
 			player.showPlayer(p);
@@ -243,7 +247,7 @@ public class DSGame {
 		double xDistOvScale = xDist / scale;
 		double zDistOvScale = zDist / scale;
 		ArrayList<ArrayList<PartCoords>> grid = new ArrayList<ArrayList<PartCoords>>((int) scale);
-		
+
 		for (int i = 0; i < scale; i++) {
 			ArrayList<PartCoords> arrayList = new ArrayList<PartCoords>((int) scale);
 			grid.add(arrayList);
@@ -251,16 +255,16 @@ public class DSGame {
 				arrayList.add(new PartCoords(i, j));
 			}
 		}
-		
+
 		ArrayList<Location> locs = new ArrayList<Location>(players.size());
-		
+
 		for (int i = 0; i < players.size(); i++) {
 			ArrayList<PartCoords> coords = grid.get(rand.nextInt(grid.size()));
 			PartCoords pc = coords.get(rand.nextInt(coords.size()));
 			Location lower = new Location(world, lowerBound.getBlockX() + (xDistOvScale * (double) pc.x), 0, lowerBound.getBlockZ() + (zDistOvScale * (double) pc.z));
 			Location upper = new Location(world, lowerBound.getBlockX() + (xDistOvScale * (double) (pc.x + 1)), 0, lowerBound.getBlockZ() + (zDistOvScale * (double) (pc.z + 1)));
 			locs.add(getRandomLoc(lower, upper));
-			
+
 			for (int j = -1 + pc.x; j < (2 + pc.x); j++) {
 				for (int k = -1 + pc.z; k < (2 + pc.z); k++) {
 					if (j < 0 || k < 0) {
@@ -277,16 +281,16 @@ public class DSGame {
 					}
 				}
 			}
-			
+
 			Iterator<ArrayList<PartCoords>> it = grid.iterator();
 			while(it.hasNext()) {
 				if (it.next().isEmpty()) {
 					it.remove();
 				}
 			}
-			
+
 		}
-		
+
 		for (int i = 0; i < players.size(); i++) {
 			Player player = DeathSwap.getInstance().getServer().getPlayerExact(players.get(i));
 			player.teleport(locs.get(i));
