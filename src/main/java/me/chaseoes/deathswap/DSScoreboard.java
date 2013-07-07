@@ -35,7 +35,7 @@ public class DSScoreboard {
 
     public void removePlayer(Player player) {
         all.remove(player.getName());
-        board.resetScores(player);
+        board.resetScores(getPlayer(player.getName()));
         player.setScoreboard(manager.getMainScoreboard());
         updateBoard();
     }
