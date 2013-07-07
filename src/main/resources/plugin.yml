@@ -1,5 +1,5 @@
 name: DeathSwap
-main: me.chaseoes.deathswap.DeathSwap
+main: com.chaseoes.deathswap.DeathSwap
 version: maven-version-number
 description: Sethbling's deathswap gametype
 softdepend: [Multiverse-Core, WorldEdit]
