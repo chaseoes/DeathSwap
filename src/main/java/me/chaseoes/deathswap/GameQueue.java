@@ -51,7 +51,7 @@ public class GameQueue {
     }
 
     public void check() {
-        if (game.getState() != GameState.INGAME) {
+        if (game.getState() != GameState.INGAME && DeathSwap.getInstance().isEnabled()) {
             DeathSwap.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(DeathSwap.getInstance(), new Runnable() {
                 @Override
                 public void run() {
