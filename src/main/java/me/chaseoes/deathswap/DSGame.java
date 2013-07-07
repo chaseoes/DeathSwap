@@ -219,17 +219,20 @@ public class DSGame {
 	public void startSwapTimer() {
 		if (swapId == -1) {
 			swapId = Bukkit.getScheduler().runTaskTimer(DeathSwap.getInstance(), new Runnable() {
-				int minTime = 20;
-				int maxTime = 120;
-				int diff = maxTime - minTime;
+                Map map = DeathSwap.getInstance().getMap(getName());
+				int diff = map.getSwapMax() - map.getSwapMin();
 				int currTime = 0;
-				int currRand = rand.nextInt(diff) + minTime;
+				int currRand = rand.nextInt(diff) + map.getSwapMin();
 				@Override
 				public void run() {
 					if (currTime > currRand) {
 						broadcast(DeathSwap.getInstance().format("Commencing swap!"));
 						swap();
-						currRand = rand.nextInt(diff) + minTime;
+                        if (diff != 0) {
+						    currRand = rand.nextInt(diff) + map.getSwapMin();
+                        } else {
+                            currRand = map.getSwapMax();
+                        }
 						currTime = 0;
 					} else {
 						currTime++;

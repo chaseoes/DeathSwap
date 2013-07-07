@@ -12,6 +12,8 @@ public class Map {
 	Location p2;
 	int maxPlayers;
     RollbackType rollback;
+    int swapMin;
+    int swapMax;
 
 	public Map(String n) {
 		name = n;
@@ -46,6 +48,8 @@ public class Map {
             } else {
                 rollback = RollbackType.BLOCKSTATE;
             }
+            swapMin = DeathSwap.getInstance().getConfig().getInt(getPath() + "swapmin", 20);
+            swapMax = DeathSwap.getInstance().getConfig().getInt(getPath() + "swapmax", 120);
 		}
 	}
 
@@ -100,5 +104,25 @@ public class Map {
         this.rollback = rollback;
         DeathSwap.getInstance().getConfig().set(getPath() + "rollback", rollback);
         DeathSwap.getInstance().saveConfig();
+    }
+
+    public int getSwapMin() {
+        return swapMin;
+    }
+
+    public void setSwapMin(int swapMin) {
+        DeathSwap.getInstance().getConfig().set(getPath() + "swapmin", swapMin);
+        DeathSwap.getInstance().saveConfig();
+        this.swapMin = swapMin;
+    }
+
+    public int getSwapMax() {
+        return swapMax;
+    }
+
+    public void setSwapMax(int swapMax) {
+        DeathSwap.getInstance().getConfig().set(getPath() + "swapmax", swapMax);
+        DeathSwap.getInstance().saveConfig();
+        this.swapMax = swapMax;
     }
 }
