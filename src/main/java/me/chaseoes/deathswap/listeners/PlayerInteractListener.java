@@ -21,7 +21,14 @@ public class PlayerInteractListener implements Listener {
 				Sign s = (Sign) event.getClickedBlock().getState();
 				if (s.getLine(1).equalsIgnoreCase("Click to play:")) {
 					String map = s.getLine(2).replace("Map: ", "");
-					if (DeathSwap.getInstance().games.containsKey(map)) {
+                    if (map.equalsIgnoreCase("Random")) {
+                        if (MetadataHelper.getDSMetadata(event.getPlayer()).isIngame()) {
+                            event.getPlayer().performCommand("ds leave");
+                        } else {
+                            event.getPlayer().performCommand("ds join");
+                        }
+                        event.setCancelled(true);
+                    } else if (DeathSwap.getInstance().games.containsKey(map)) {
 						if (MetadataHelper.getDSMetadata(event.getPlayer()).isIngame()) {
 							event.getPlayer().performCommand("ds leave");
 						} else {

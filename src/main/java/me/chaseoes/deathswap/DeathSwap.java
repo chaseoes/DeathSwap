@@ -1,8 +1,6 @@
 package me.chaseoes.deathswap;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 import me.chaseoes.deathswap.listeners.*;
 import me.chaseoes.deathswap.metadata.MetadataHelper;
@@ -114,11 +112,24 @@ public class DeathSwap extends JavaPlugin {
 						} else {
 							cs.sendMessage(format("That map does not exist!"));
 						}
-					} else {
-						cs.sendMessage(format("Incorrect command syntax."));
-						cs.sendMessage(format("Type &b/ds help &7for help."));
-					}
-				} else {
+					} else if (strings.length == 1) {
+                        ArrayList<String> validMaps = new ArrayList<String>();
+                        for (Map map : maps.values()) {
+                            if (map.getType() == GameType.PUBLIC && games.get(map.getName()).getState() == GameState.WAITING && !disabled.contains(map.getName())) {
+                                validMaps.add(map.getName());
+                            }
+                        }
+                        Collections.shuffle(validMaps);
+                        if (validMaps.size() == 0) {
+                            cs.sendMessage(format("No joinable games were found!"));
+                        } else {
+                            games.get(validMaps.get(0)).joinGame((Player) cs);
+                        }
+                    } else {
+                        cs.sendMessage(format("Incorrect command syntax."));
+                        cs.sendMessage(format("Type &b/ds help &7for help."));
+                    }
+                } else {
 					cs.sendMessage(format("You don't have permission."));
 				}
 			}
