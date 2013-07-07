@@ -23,7 +23,7 @@ public class DSScoreboard {
         this.game = game;
         manager = Bukkit.getServer().getScoreboardManager();
         board = manager.getNewScoreboard();
-        obj = board.registerNewObjective("DeathSwap: " + game.getName(), "dummy");
+        obj = board.registerNewObjective("DeathSwap", "dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         obj.setDisplayName(ChatColor.YELLOW + "DeathSwap");
     }
