@@ -122,8 +122,9 @@ public class DSGame {
 
 
     public void joinGame(Player player) {
-        if (state == GameState.INGAME) {
-            player.sendMessage(DeathSwap.getInstance().format("That game is currently in progress."));
+        if (!queue.gameHasRoom() || state == GameState.INGAME) {
+            queue.add(player);
+            player.sendMessage(DeathSwap.getInstance().format("You are number " + queue.getPosition(player) + " in the queue"));
         } else if (state == GameState.WAITING) {
             if (DeathSwap.getInstance().getMap(name).getType() == GameType.PRIVATE) {
                 //TODO: Approval of join goes here
