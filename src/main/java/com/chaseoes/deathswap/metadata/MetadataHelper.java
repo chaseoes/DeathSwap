@@ -1,12 +1,12 @@
 package com.chaseoes.deathswap.metadata;
 
+import java.util.List;
+
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
 import com.chaseoes.deathswap.DeathSwap;
-
-import java.util.List;
 
 public class MetadataHelper {
 

@@ -1,5 +1,12 @@
 package com.chaseoes.deathswap;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,16 +17,8 @@ import com.chaseoes.deathswap.utilities.WorldEditUtilities;
 import com.sk89q.worldedit.EmptyClipboardException;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 public class MapUtilities {
-	
+
     static MapUtilities instance = new MapUtilities();
     private File customConfigFile;
     private YamlConfiguration customConfig;
@@ -31,10 +30,10 @@ public class MapUtilities {
     public static MapUtilities getUtilities() {
         return instance;
     }
-    
+
     public void createMap(Map map, Player p, GameType type, int maxPlayers) throws EmptyClipboardException {
-    	System.out.println(map.getName() + " " + p + " " + type + " " + maxPlayers);
-    	System.out.println(WorldEditUtilities.getWorldEdit());
+        System.out.println(map.getName() + " " + p + " " + type + " " + maxPlayers);
+        System.out.println(WorldEditUtilities.getWorldEdit());
         Selection sel = WorldEditUtilities.getWorldEdit().getSelection(p);
         if (sel != null) {
             Location b1 = new Location(p.getWorld(), sel.getNativeMinimumPoint().getBlockX(), sel.getNativeMinimumPoint().getBlockY(), sel.getNativeMinimumPoint().getBlockZ());

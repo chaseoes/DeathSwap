@@ -1,6 +1,5 @@
 package com.chaseoes.deathswap.listeners;
 
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,10 +15,10 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         MetadataHelper.createDSMetadata(event.getPlayer());
         for (DSGame game : DeathSwap.getInstance().games.values()) {
-        	for (String p : game.getPlayersIngame()) {
-        		Player player = DeathSwap.getInstance().getServer().getPlayerExact(p);
-        		player.hidePlayer(event.getPlayer());
-        	}
+            for (String p : game.getPlayersIngame()) {
+                Player player = DeathSwap.getInstance().getServer().getPlayerExact(p);
+                player.hidePlayer(event.getPlayer());
+            }
         }
     }
 }

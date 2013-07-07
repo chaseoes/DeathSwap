@@ -1,10 +1,10 @@
 package com.chaseoes.deathswap;
 
+import java.util.ArrayList;
+
 import org.bukkit.entity.Player;
 
 import com.chaseoes.deathswap.metadata.MetadataHelper;
-
-import java.util.ArrayList;
 
 public class GameQueue {
 

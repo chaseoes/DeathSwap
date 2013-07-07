@@ -1,6 +1,5 @@
 package com.chaseoes.deathswap.utilities;
 
-
 import org.bukkit.plugin.Plugin;
 
 import com.chaseoes.deathswap.DeathSwap;
@@ -25,19 +24,12 @@ public class WorldEditUtilities {
         plugin = p;
         Plugin pl = p.getServer().getPluginManager().getPlugin("WorldEdit");
         if (pl != null && pl instanceof WorldEditPlugin) {
-        	worldEditPlugin = (WorldEditPlugin) pl;
+            worldEditPlugin = (WorldEditPlugin) pl;
         }
     }
+
     public static WorldEditPlugin getWorldEdit() {
         return worldEditPlugin;
     }
 
-    //public boolean isInMap(Entity entity, Map map) {
-        //return isInMap(entity.getLocation(), map);
-   // }
-
-    //public boolean isInMap(Location loc, Map map) {
-       // Selection sel = new CuboidSelection(map.getP1().getWorld(), map.getP1(), map.getP2());
-      //  return sel.contains(loc);
-   // }
 }

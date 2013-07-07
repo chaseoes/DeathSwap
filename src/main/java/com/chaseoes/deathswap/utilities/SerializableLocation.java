@@ -1,6 +1,5 @@
 package com.chaseoes.deathswap.utilities;
 
-
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -58,5 +57,5 @@ public class SerializableLocation {
         // }
         // return false;
     }
-    
+
 }

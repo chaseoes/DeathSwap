@@ -9,19 +9,14 @@ import com.chaseoes.deathswap.metadata.MetadataHelper;
 
 public class SwapState {
 
-    private final String owner;
     private Location loc;
     private Entity vehicle;
     private Inventory inv;
     private org.bukkit.util.Vector velocity;
     private float fallDistance;
 
-    private SwapState(Player owner) {
-        this.owner = owner.getName();
-    }
-
     public static SwapState getSwapState(Player player) {
-        SwapState state = new SwapState(player);
+        SwapState state = new SwapState();
         state.loc = player.getLocation();
         state.vehicle = player.getVehicle();
         state.inv = MetadataHelper.getDSMetadata(player).getLastOpened();
