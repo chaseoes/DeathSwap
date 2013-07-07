@@ -78,14 +78,16 @@ public class MapUtilities {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Bukkit.getScheduler().runTask(DeathSwap.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv import " + map.getName());
-                        DeathSwap.getInstance().getGame(map.getName()).setState(GameState.WAITING);
-                        DeathSwap.getInstance().getGame(map.getName()).getQueue().check();
-                    }
-                });
+                if (DeathSwap.getInstance().isEnabled()) {
+                    Bukkit.getScheduler().runTask(DeathSwap.getInstance(), new Runnable() {
+                        @Override
+                        public void run() {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv import " + map.getName());
+                            DeathSwap.getInstance().getGame(map.getName()).setState(GameState.WAITING);
+                            DeathSwap.getInstance().getGame(map.getName()).getQueue().check();
+                        }
+                    });
+                }
             }
         });
     }
