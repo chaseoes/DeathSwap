@@ -1,8 +1,8 @@
 package me.chaseoes.deathswap;
 
 import me.chaseoes.deathswap.utilities.SerializableLocation;
-
 import org.bukkit.Location;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Map {
 
@@ -26,7 +26,7 @@ public class Map {
 
 	public void setType(GameType type) {
 		this.type = type;
-		DeathSwap.getInstance().getConfig().set(getPath() + "type", type.getName());
+		MapUtilities.getUtilities().getCustomConfig().set(getPath() + "type", type.getName());
 		DeathSwap.getInstance().saveConfig();
 	}
 
@@ -35,54 +35,55 @@ public class Map {
 	}
 
 	public void load() {
-		String typ = DeathSwap.getInstance().getConfig().getString(getPath() + "type");
+        YamlConfiguration config = MapUtilities.getUtilities().getCustomConfig();
+		String typ = config.getString(getPath() + "type");
 		if (typ != null) {
 			System.out.println("TYPE " + typ + "GT " + GameType.get(typ));
 			type = GameType.get(typ);
-			maxPlayers = DeathSwap.getInstance().getConfig().getInt(getPath() + "max-players");
-			p1 = SerializableLocation.getUtilities().stringToLocation(DeathSwap.getInstance().getConfig().getString(getPath() + "region.p1"));
-			p2 = SerializableLocation.getUtilities().stringToLocation(DeathSwap.getInstance().getConfig().getString(getPath() + "region.p2"));
-            String rb = DeathSwap.getInstance().getConfig().getString(getPath() + "rollback");
+			maxPlayers = config.getInt(getPath() + "max-players");
+			p1 = SerializableLocation.getUtilities().stringToLocation(config.getString(getPath() + "region.p1"));
+			p2 = SerializableLocation.getUtilities().stringToLocation(config.getString(getPath() + "region.p2"));
+            String rb = config.getString(getPath() + "rollback");
             if (rb != null) {
                 rollback = RollbackType.valueOf(rb);
             } else {
                 rollback = RollbackType.BLOCKSTATE;
             }
-            swapMin = DeathSwap.getInstance().getConfig().getInt(getPath() + "swapmin", 20);
-            swapMax = DeathSwap.getInstance().getConfig().getInt(getPath() + "swapmax", 120);
+            swapMin = config.getInt(getPath() + "swapmin", 20);
+            swapMax = config.getInt(getPath() + "swapmax", 120);
 		}
 	}
 
 	public Location getP1() {
         if (p1.getWorld() == null) {
-            p1 = SerializableLocation.getUtilities().stringToLocation(DeathSwap.getInstance().getConfig().getString(getPath() + "region.p1"));
+            p1 = SerializableLocation.getUtilities().stringToLocation(MapUtilities.getUtilities().getCustomConfig().getString(getPath() + "region.p1"));
         }
 		return p1;
 	}
 
 	public Location getP2() {
         if (p2.getWorld() == null) {
-            p2 = SerializableLocation.getUtilities().stringToLocation(DeathSwap.getInstance().getConfig().getString(getPath() + "region.p2"));
+            p2 = SerializableLocation.getUtilities().stringToLocation(MapUtilities.getUtilities().getCustomConfig().getString(getPath() + "region.p2"));
         }
 		return p2;
 	}
 
 	public void setP1(Location p1) {
 		this.p1 = p1;
-		DeathSwap.getInstance().getConfig().set(getPath() + "region.p1", SerializableLocation.getUtilities().locationToString(p1));
-		DeathSwap.getInstance().saveConfig();
+		MapUtilities.getUtilities().getCustomConfig().set(getPath() + "region.p1", SerializableLocation.getUtilities().locationToString(p1));
+		MapUtilities.getUtilities().saveData();
 	}
 
 	public void setP2(Location p2) {
 		this.p2 = p2;
-		DeathSwap.getInstance().getConfig().set(getPath() + "region.p2", SerializableLocation.getUtilities().locationToString(p2));
-		DeathSwap.getInstance().saveConfig();
+		MapUtilities.getUtilities().getCustomConfig().set(getPath() + "region.p2", SerializableLocation.getUtilities().locationToString(p2));
+		MapUtilities.getUtilities().saveData();
 	}
 
 	public void setMaxPlayers(int i) {
 		this.maxPlayers = i;
-		DeathSwap.getInstance().getConfig().set(getPath() + "max-players", i);
-		DeathSwap.getInstance().saveConfig();
+		MapUtilities.getUtilities().getCustomConfig().set(getPath() + "max-players", i);
+		MapUtilities.getUtilities().saveData();
 	}
 
 	public int getMaxPlayers() {
@@ -102,8 +103,8 @@ public class Map {
 
     public void setRollback(RollbackType rollback) {
         this.rollback = rollback;
-        DeathSwap.getInstance().getConfig().set(getPath() + "rollback", rollback);
-        DeathSwap.getInstance().saveConfig();
+        MapUtilities.getUtilities().getCustomConfig().set(getPath() + "rollback", rollback);
+        MapUtilities.getUtilities().saveData();
     }
 
     public int getSwapMin() {
@@ -111,8 +112,8 @@ public class Map {
     }
 
     public void setSwapMin(int swapMin) {
-        DeathSwap.getInstance().getConfig().set(getPath() + "swapmin", swapMin);
-        DeathSwap.getInstance().saveConfig();
+        MapUtilities.getUtilities().getCustomConfig().set(getPath() + "swapmin", swapMin);
+        MapUtilities.getUtilities().saveData();
         this.swapMin = swapMin;
     }
 
@@ -121,8 +122,8 @@ public class Map {
     }
 
     public void setSwapMax(int swapMax) {
-        DeathSwap.getInstance().getConfig().set(getPath() + "swapmax", swapMax);
-        DeathSwap.getInstance().saveConfig();
+        MapUtilities.getUtilities().getCustomConfig().set(getPath() + "swapmax", swapMax);
+        MapUtilities.getUtilities().saveData();
         this.swapMax = swapMax;
     }
 }

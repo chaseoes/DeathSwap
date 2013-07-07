@@ -51,8 +51,8 @@ public class DeathSwap extends JavaPlugin {
         pm.registerEvents(new InventoryCloseListener(), this);
         pm.registerEvents(new InventoryOpenListener(), this);
 
-		if (getConfig().getConfigurationSection("maps") != null) {
-			for (String map : getConfig().getConfigurationSection("maps").getKeys(false)) {
+		if (MapUtilities.getUtilities().getCustomConfig().getConfigurationSection("maps") != null) {
+			for (String map : MapUtilities.getUtilities().getCustomConfig().getConfigurationSection("maps").getKeys(false)) {
 				maps.put(map, new Map(map));
 				games.put(map, new DSGame(map, maps.get(map).getP1(), maps.get(map).getP2()));
 			}

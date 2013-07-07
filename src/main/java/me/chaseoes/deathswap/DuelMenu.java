@@ -17,7 +17,7 @@ public class DuelMenu {
 
 	public DuelMenu(final Player player, final Player playerToDuel) {
 		this.player = player;
-		Set<String> maps = DeathSwap.getInstance().getConfig().getConfigurationSection("maps").getKeys(false);
+		Set<String> maps = MapUtilities.getUtilities().getCustomConfig().getConfigurationSection("maps").getKeys(false);
 		menu = new IconMenu("Pick a map to duel on!", roundUp(maps.size()), new IconMenu.OptionClickEventHandler() {
 			public void onOptionClick(IconMenu.OptionClickEvent event) {
                 event.setWillClose(true);
@@ -46,7 +46,7 @@ public class DuelMenu {
 	}
 
 	private ItemStack getIcon(String mapName) {
-		String item = DeathSwap.getInstance().getConfig().getString("maps." + mapName + ".icon");
+		String item = MapUtilities.getUtilities().getCustomConfig().getString("maps." + mapName + ".icon");
 		ItemStack i;
 
 		if (item != null) {

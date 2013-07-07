@@ -4,6 +4,7 @@ import me.chaseoes.deathswap.utilities.WorldEditUtilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.EmptyClipboardException;
@@ -20,6 +21,8 @@ import java.util.zip.ZipFile;
 public class MapUtilities {
 	
     static MapUtilities instance = new MapUtilities();
+    private File customConfigFile;
+    private YamlConfiguration customConfig;
 
     private MapUtilities() {
 
@@ -99,5 +102,34 @@ public class MapUtilities {
             }
         }
         file.delete();
+    }
+
+    public void reloadDataConfig() {
+        try {
+            if (customConfigFile == null) {
+                customConfigFile = new File(DeathSwap.getInstance().getDataFolder(), "data.yml");
+            }
+            customConfig = YamlConfiguration.loadConfiguration(customConfigFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public YamlConfiguration getCustomConfig() {
+        if (customConfig == null) {
+            reloadDataConfig();
+        }
+        return customConfig;
+    }
+
+    public void saveData() {
+        if (customConfig == null || customConfigFile == null) {
+            return;
+        }
+        try {
+            getCustomConfig().save(customConfigFile);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }
