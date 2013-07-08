@@ -1,8 +1,10 @@
 package com.chaseoes.deathswap;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,6 +27,7 @@ import com.chaseoes.deathswap.listeners.PlayerQuitListener;
 import com.chaseoes.deathswap.listeners.SignChangeListener;
 import com.chaseoes.deathswap.metadata.MetadataHelper;
 import com.chaseoes.deathswap.utilities.DuelInfo;
+import com.chaseoes.deathswap.utilities.MetricsLite;
 import com.chaseoes.deathswap.utilities.SerializableLocation;
 import com.chaseoes.deathswap.utilities.WorldEditUtilities;
 
@@ -80,6 +83,13 @@ public class DeathSwap extends JavaPlugin {
                 getServer().broadcastMessage(format("-------------------"));
             }
         }, 40L);
+
+        try {
+            MetricsLite metrics = new MetricsLite(this);
+            metrics.start();
+        } catch (IOException e) {
+            getLogger().log(Level.WARNING, "psycowithespn broke something.");
+        }
     }
 
     public void onDisable() {
