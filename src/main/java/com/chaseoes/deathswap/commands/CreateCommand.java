@@ -41,8 +41,8 @@ public class CreateCommand {
                     String mapName = strings[2];
                     String mapIcon = strings[3];
                     if (DeathSwap.getInstance().games.containsKey(mapName)) {
-                        DeathSwap.getInstance().getConfig().set("maps." + mapName + ".icon", mapIcon.toUpperCase());
-                        DeathSwap.getInstance().saveConfig();
+                        MapUtilities.getUtilities().getCustomConfig().set("maps." + mapName + ".icon", mapIcon.toUpperCase());
+                        MapUtilities.getUtilities().saveData();
                     } else {
                         cs.sendMessage(DeathSwap.format("That map does not exist."));
                     }
