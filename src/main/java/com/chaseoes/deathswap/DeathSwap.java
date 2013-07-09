@@ -40,6 +40,7 @@ public class DeathSwap extends JavaPlugin {
     public HashSet<String> disabled = new HashSet<String>();
     public HashSet<String> noRequests = new HashSet<String>();
     public HashMap<String, Long> duelReqTimes = new HashMap<String, Long>();
+    public HashMap<String, String> matchups = new HashMap<String, String>();
     public final int MS_IN_A_SEC = 1000;
 
     public static DeathSwap getInstance() {

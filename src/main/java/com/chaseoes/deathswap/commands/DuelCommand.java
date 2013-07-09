@@ -8,6 +8,7 @@ import com.chaseoes.deathswap.GameState;
 import com.chaseoes.deathswap.GameType;
 import com.chaseoes.deathswap.metadata.MetadataHelper;
 import com.chaseoes.deathswap.utilities.DuelInfo;
+import com.chaseoes.deathswap.utilities.MatchupUtilities;
 
 public class DuelCommand {
 
@@ -54,13 +55,18 @@ public class DuelCommand {
                     player.sendMessage(DeathSwap.format("Type &b/ds accept &7to accept their request."));
                     DeathSwap.getInstance().needsToAccept.put(player.getName(), new DuelInfo(cs.getName(), map));
                 }
-            } else if (strings.length == 2 && strings[1].equalsIgnoreCase("toggle")) {
-                if (!DeathSwap.getInstance().noRequests.contains(cs.getName())) {
-                    DeathSwap.getInstance().noRequests.add(cs.getName());
-                    cs.sendMessage(DeathSwap.format("Players are no longer allowed to send you requests to duel."));
+            } else if (strings.length == 2) {
+                if (strings[1].equalsIgnoreCase("toggle")) {
+                    if (!DeathSwap.getInstance().noRequests.contains(cs.getName())) {
+                        DeathSwap.getInstance().noRequests.add(cs.getName());
+                        cs.sendMessage(DeathSwap.format("Players are no longer allowed to send you requests to duel."));
+                    } else {
+                        DeathSwap.getInstance().noRequests.remove(cs.getName());
+                        cs.sendMessage(DeathSwap.format("Players are now allowed to send you requests to duel."));
+                    }
                 } else {
-                    DeathSwap.getInstance().noRequests.remove(cs.getName());
-                    cs.sendMessage(DeathSwap.format("Players are now allowed to send you requests to duel."));
+                    String map = strings[1];
+                    boolean b = MatchupUtilities.matchup((Player) cs, map);
                 }
             } else {
                 cs.sendMessage(DeathSwap.format("Incorrect command syntax."));
@@ -70,5 +76,4 @@ public class DuelCommand {
             cs.sendMessage(DeathSwap.format("You don't have permission."));
         }
     }
-
 }
