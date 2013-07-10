@@ -67,6 +67,10 @@ public class DuelCommand {
                 } else {
                     String map = strings[1];
                     boolean b = MatchupUtilities.matchup((Player) cs, map);
+                    if (!b) {
+                        cs.sendMessage(DeathSwap.format("We couldn't find a player to match you with!"));
+                        cs.sendMessage(DeathSwap.format("You will join a game as soon as we find a player."));
+                    }
                 }
             } else {
                 cs.sendMessage(DeathSwap.format("Incorrect command syntax."));
