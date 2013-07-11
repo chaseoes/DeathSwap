@@ -41,6 +41,7 @@ public class DSGame {
 
     public DSGame(String name, Location loc1, Location loc2) {
         this.name = name;
+        rollbackBlocks();
         lowerBound = new Location(loc1.getWorld(), Math.min(loc1.getBlockX(), loc2.getBlockX()), 0, Math.min(loc1.getBlockZ(), loc2.getBlockZ()));
         upperBound = new Location(loc1.getWorld(), Math.max(loc1.getBlockX(), loc2.getBlockX()), loc1.getWorld().getMaxHeight(), Math.max(loc1.getBlockZ(), loc2.getBlockZ()));
         world = loc1.getWorld();
