@@ -65,17 +65,21 @@ public class MapUtilities {
                     while (entries.hasMoreElements()) {
                         ZipEntry entry = entries.nextElement();
                         File worldEntry = new File(world, entry.getName());
-                        worldEntry.getParentFile().mkdirs();
-                        worldEntry.createNewFile();
-                        InputStream stream = file.getInputStream(entry);
-                        FileOutputStream fos = new FileOutputStream(worldEntry);
-                        int data;
-                        while ((data = stream.read()) != -1) {
-                            fos.write(data);
+                        if (worldEntry.isDirectory()) {
+                            worldEntry.mkdirs();
+                        } else {
+                            worldEntry.getParentFile().mkdirs();
+                            worldEntry.createNewFile();
+                            InputStream stream = file.getInputStream(entry);
+                            FileOutputStream fos = new FileOutputStream(worldEntry);
+                            int data;
+                            while ((data = stream.read()) != -1) {
+                                fos.write(data);
+                            }
+                            fos.flush();
+                            fos.close();
+                            stream.close();
                         }
-                        fos.flush();
-                        fos.close();
-                        stream.close();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
