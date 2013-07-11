@@ -84,7 +84,7 @@ public class MapUtilities {
                     Bukkit.getScheduler().runTask(DeathSwap.getInstance(), new Runnable() {
                         @Override
                         public void run() {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv import " + map.getName());
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mv import " + map.getName() + " normal");
                             DeathSwap.getInstance().getGame(map.getName()).setState(GameState.WAITING);
                             DeathSwap.getInstance().getGame(map.getName()).getQueue().check();
                         }
