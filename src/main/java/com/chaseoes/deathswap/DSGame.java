@@ -134,6 +134,7 @@ public class DSGame {
                     startGame();
                 }
                 board.addPlayer(player);
+                playerStates.put(player.getName(), new PlayerStateStorage(player));
             } else if (queue.gameHasRoom()) {
                 queue.remove(player);
                 players.add(player.getName());
@@ -145,6 +146,7 @@ public class DSGame {
                     startGame();
                 }
                 board.addPlayer(player);
+                playerStates.put(player.getName(), new PlayerStateStorage(player));
             } else {
                 queue.add(player);
                 player.sendMessage("You are number " + (queue.getPosition(player) + 1) + " in the queue");
