@@ -72,9 +72,10 @@ public class MapUtilities {
                             worldEntry.createNewFile();
                             InputStream stream = file.getInputStream(entry);
                             FileOutputStream fos = new FileOutputStream(worldEntry);
+                            int len = -1;
                             byte[] data = new byte[1024];
-                            while (stream.read(data) != -1) {
-                                fos.write(data);
+                            while ((len = stream.read(data)) != -1) {
+                                fos.write(data, 0, len);
                             }
                             fos.flush();
                             fos.close();
